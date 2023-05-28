@@ -24,14 +24,9 @@ private:
     //mouse position
     sf::Vector2i mousePosWindow;
 
-    //Game object
-    std::vector<sf::RectangleShape> enemies;
-    sf::RectangleShape enemy;
-
     //private funtions
     void initializeVariables();
     void initWindow();
-    void initEnemies();
 public:
     //Constructors / Destructors
     Game();
@@ -41,8 +36,11 @@ public:
     const bool running() const;
     
     //functions
+
+    void DrawField();
     void pollEvents();
     void updateMousePositions();
     void update();
+
     void render();
 };
