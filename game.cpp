@@ -44,26 +44,36 @@ void Game::DrawField()
 
     float verticalLineThickness = 5.f;
     float horizontalLineThickness = 5.f;
-
+    
+    //v1
     sf::RectangleShape verticalLine1(sf::Vector2f(verticalLineThickness, windowHeight));
     verticalLine1.setPosition(sf::Vector2f(windowWidth * (1.0f / 3.0f) - verticalLineThickness / 2.f, 0.f));
     verticalLine1.setFillColor(sf::Color::Black);
     window->draw(verticalLine1);
-
+    //v2
     sf::RectangleShape verticalLine2(sf::Vector2f(verticalLineThickness, windowHeight));
     verticalLine2.setPosition(sf::Vector2f(windowWidth * (2.0f / 3.0f) - verticalLineThickness / 2.f, 0.f));
     verticalLine2.setFillColor(sf::Color::Black);
     window->draw(verticalLine2);
-
+    //h1
     sf::RectangleShape horizontalLine1(sf::Vector2f(windowWidth, horizontalLineThickness));
     horizontalLine1.setPosition(sf::Vector2f(0.f, windowHeight / 3.f - horizontalLineThickness / 2.f));
     horizontalLine1.setFillColor(sf::Color::Black);
     window->draw(horizontalLine1);
-
+    //h2
     sf::RectangleShape horizontalLine2(sf::Vector2f(windowWidth, horizontalLineThickness));
     horizontalLine2.setPosition(sf::Vector2f(0.f, windowHeight * (2.0f / 3.0f) - horizontalLineThickness / 2.f));
     horizontalLine2.setFillColor(sf::Color::Black);
     window->draw(horizontalLine2);
+    
+    /* 
+        v1   v2
+         |    |
+    h1---|----|---
+         |    |
+    h2---|----|---
+         |    |
+    */
 }
 
 
