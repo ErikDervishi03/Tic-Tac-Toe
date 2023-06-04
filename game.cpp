@@ -1,9 +1,5 @@
 #include "game.h"
 //private
-void Game::initializeVariables()
-{
-  this->window = nullptr;
-}
 void Game::initWindow()
 {
   this->videoMode.height = 400;
@@ -12,22 +8,29 @@ void Game::initWindow()
   this->window->setFramerateLimit(60); // Optionally, set a framerate limit for the window
 }
 //construtor / destructors
-Game::Game()
+Game::Game():
+  window(nullptr)
 {
-  this->initializeVariables();
   this->initWindow();
 }
 Game::~Game()
 {
   delete this->window;
 }
-
 //accessors
 const bool Game::running() const
 {
   return this->window->isOpen();
 }
-
+void drawLine(sf::Vector2f line,)
+{
+  float verticalLineThickness = 5.f;
+  float horizontalLineThickness = 5.f;
+  sf::RectangleShape verticalLine(line);
+  verticalLine.setPosition(pos);
+  verticalLine.setFillColor(sf::Color::Black);
+  window->draw(verticalLine);
+}
 //functions
 void Game::DrawField()
 {

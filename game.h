@@ -20,7 +20,6 @@ private:
   //mouse position
   sf::Vector2i mousePosWindow;
   //private funtions
-  void initializeVariables();
   void initWindow();
 public:
   //Constructors / Destructors
