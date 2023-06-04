@@ -1,11 +1,11 @@
 #include "game.h"
 //construtor / destructors
 Game::Game():
-  videoMode_(400, 400),
+  videoMode_(600, 600),
   ev_()
 {
   this->window_ = new sf::RenderWindow(videoMode_, "Tic-Tac-Toe", sf::Style::Titlebar);
-  this->window_->setFramerateLimit(60); // Optionally, set a framerate limit for the window
+  //this->window_->setFramerateLimit(60); // Optionally, set a framerate limit for the window
 }
 //accessors
 bool Game::running() const
