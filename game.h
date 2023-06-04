@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GAME_H
+#define GAME_H
 #include <iostream>
 #include <vector>
 #include <SFML/Graphics.hpp>
@@ -33,3 +34,4 @@ private:
   sf::VideoMode videoMode_;
   sf::Vector2i mousePosWindow_; //mouse position
 };
+#endif
