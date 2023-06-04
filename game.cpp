@@ -1,97 +1,81 @@
 #include "game.h"
-//private
-void Game::initWindow()
-{
-  this->videoMode.height = 400;
-  this->videoMode.width = 400;
-  this->window = new sf::RenderWindow(this->videoMode, "Tic-Tac-Toe", sf::Style::Titlebar);
-  this->window->setFramerateLimit(60); // Optionally, set a framerate limit for the window
-}
 //construtor / destructors
 Game::Game():
-  window(nullptr)
+  videoMode_(400, 400),
+  ev_()
 {
-  this->initWindow();
-}
-Game::~Game()
-{
-  delete this->window;
+  this->window_ = new sf::RenderWindow(videoMode_, "Tic-Tac-Toe", sf::Style::Titlebar);
+  this->window_->setFramerateLimit(60); // Optionally, set a framerate limit for the window
 }
 //accessors
-const bool Game::running() const
+bool Game::running() const
 {
-  return this->window->isOpen();
+  return this->window_->isOpen();
 }
-void drawLine(sf::Vector2f line,)
+void Game::drawLine(sf::Vector2f line, sf::Vector2f pos)
 {
-  float verticalLineThickness = 5.f;
-  float horizontalLineThickness = 5.f;
   sf::RectangleShape verticalLine(line);
   verticalLine.setPosition(pos);
   verticalLine.setFillColor(sf::Color::Black);
-  window->draw(verticalLine);
+  window_->draw(verticalLine);
 }
 //functions
-void Game::DrawField()
+void Game::drawField()
 {
-  sf::Vector2u windowSize = window->getSize();
+  sf::Vector2u windowSize = window_->getSize();
   float windowWidth = static_cast< float >(windowSize.x);
   float windowHeight = static_cast< float >(windowSize.y);
   float verticalLineThickness = 5.f;
   float horizontalLineThickness = 5.f;
 
-  //v1
-  sf::RectangleShape verticalLine1(sf::Vector2f(verticalLineThickness, windowHeight));
-  verticalLine1.setPosition(sf::Vector2f(windowWidth * (1.0f / 3.0f) - verticalLineThickness / 2.f, 0.f));
-  verticalLine1.setFillColor(sf::Color::Black);
-  window->draw(verticalLine1);
-  //v2
-  sf::RectangleShape verticalLine2(sf::Vector2f(verticalLineThickness, windowHeight));
-  verticalLine2.setPosition(sf::Vector2f(windowWidth * (2.0f / 3.0f) - verticalLineThickness / 2.f, 0.f));
-  verticalLine2.setFillColor(sf::Color::Black);
-  window->draw(verticalLine2);
-  //h1
-  sf::RectangleShape horizontalLine1(sf::Vector2f(windowWidth, horizontalLineThickness));
-  horizontalLine1.setPosition(sf::Vector2f(0.f, windowHeight / 3.f - horizontalLineThickness / 2.f));
-  horizontalLine1.setFillColor(sf::Color::Black);
-  window->draw(horizontalLine1);
-  //h2
-  sf::RectangleShape horizontalLine2(sf::Vector2f(windowWidth, horizontalLineThickness));
-  horizontalLine2.setPosition(sf::Vector2f(0.f, windowHeight * (2.0f / 3.0f) - horizontalLineThickness / 2.f));
-  horizontalLine2.setFillColor(sf::Color::Black);
-  window->draw(horizontalLine2);
-
   /*
-      v1   v2
-       |    |
-  h1---|----|---
-       |    |
-  h2---|----|---
-       |    |
+        v1   v2
+         |    |
+    h1---|----|---
+         |    |
+    h2---|----|---
+         |    |
   */
+
+  //v1
+  drawLine(
+    sf::Vector2f(verticalLineThickness, windowHeight),
+    sf::Vector2f(windowWidth * (1.0f / 3.0f) - verticalLineThickness / 2.f, 0.f)
+  );
+  //v2
+  drawLine(
+    sf::Vector2f(verticalLineThickness, windowHeight),
+    sf::Vector2f(windowWidth * (2.0f / 3.0f) - verticalLineThickness / 2.f, 0.f)
+  );
+  //h1
+  drawLine(
+    sf::Vector2f(windowWidth, horizontalLineThickness),
+    sf::Vector2f(0.f, windowHeight / 3.f - horizontalLineThickness / 2.f)
+  );
+  //h2
+  drawLine(
+    sf::Vector2f(windowWidth, horizontalLineThickness),
+    sf::Vector2f(0.f, windowHeight * (2.0f / 3.0f) - horizontalLineThickness / 2.f)
+  );
 }
 void Game::pollEvents()
 {
   // Continuously check for events
-  while (this->window->pollEvent(this->ev))
+  while (this->window_->pollEvent(this->ev_))
   {
     // Handle different types of events
-    switch (this->ev.type)
+    switch (this->ev_.type)
     {
-      // If the user clicks the close button of the window
-      case sf::Event::Closed:
-        // Close the game window
-        this->window->close();
+      case sf::Event::Closed: // If the user clicks the close button of the window
+        this->window_->close(); // Close the game window
         break;
-
-        // If a key is pressed
-      case sf::Event::KeyPressed:
-        // Check if the pressed key is the Escape key
-        if (this->ev.key.code == sf::Keyboard::Escape)
+      case sf::Event::KeyPressed: // If a key is pressed
+        if (this->ev_.key.code == sf::Keyboard::Escape) // Check if the pressed key is the Escape key
         {
-          // Close the game window
-          this->window->close();
+          this->window_->close(); // Close the game window
         }
+        break;
+      default:
         break;
     }
   }
@@ -105,7 +89,7 @@ void Game::updateMousePositions()
       * Mouse position relative to window (Vector2i)
   */
 
-  this->mousePosWindow = sf::Mouse::getPosition(*this->window);
+  this->mousePosWindow_ = sf::Mouse::getPosition(*this->window_);
 }
 void Game::update()
 {
@@ -124,9 +108,9 @@ void Game::render()
       Renders the game objects
   */
   //This line of code clears the previous frame by filling the window with a yellow color
-  this->window->clear(sf::Color::Yellow);
-  this->DrawField();
+  this->window_->clear(sf::Color::Yellow);
+  this->drawField();
 
   //Draw game objects
-  this->window->display();
+  this->window_->display();
 }

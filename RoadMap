@@ -2,8 +2,9 @@ RoadMap:
 
 -[X] draw field
 -[ ] create buttons on the field
--[ ] remove second console window
 -[ ] ...
+-[ ] remove second console window
+-[ ] exe and dlls fix
 -[ ] ...
 
 if a thing is done, check the checkbox like:

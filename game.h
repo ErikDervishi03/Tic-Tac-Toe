@@ -5,34 +5,31 @@
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/Audio.hpp>
-#include <SFML/Network.hpp>
 /*
     class that acts as the game engine
 */
 class Game
 {
-private:
-  //variables
-  //window
-  sf::RenderWindow *window;
-  sf::Event ev;
-  sf::VideoMode videoMode;
-  //mouse position
-  sf::Vector2i mousePosWindow;
-  //private funtions
-  void initWindow();
 public:
   //Constructors / Destructors
   Game();
-  virtual ~Game();
+  ~Game() = default;
+
   //Accessors
-  const bool running() const;
+  bool running() const;
 
   //functions
-
-  void DrawField();
+  void drawField();
+  void drawLine(sf::Vector2f line, sf::Vector2f pos);
   void pollEvents();
   void updateMousePositions();
   void update();
   void render();
+private:
+  //variables
+  //window
+  sf::RenderWindow *window_; // _ usually used in private variables
+  sf::Event ev_;
+  sf::VideoMode videoMode_;
+  sf::Vector2i mousePosWindow_; //mouse position
 };
