@@ -1,4 +1,3 @@
-#include <stdexcept>
 #include "cross.h"
 namespace
 {
@@ -21,4 +20,7 @@ Cross::Cross(sf::Vector2i pos, size_t size)
   sf::Vector2i bottomLeft = addVector({-halfSize, -halfSize}, pos);
   linesArray_.emplace_back(topLeft, bottomRight);
   linesArray_.emplace_back(bottomLeft, topRight);
+}
+void Cross::draw()
+{
 }
