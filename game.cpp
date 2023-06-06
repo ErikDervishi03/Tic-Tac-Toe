@@ -11,10 +11,10 @@ bool Game::running() const
 }
 void Game::drawLine(sf::Vector2f line, sf::Vector2f pos)
 {
-  sf::RectangleShape verticalLine(line);
-  verticalLine.setPosition(pos);
-  verticalLine.setFillColor(sf::Color::Black);
-  window_->draw(verticalLine);
+  sf::RectangleShape rect(line);
+  rect.setPosition(pos);
+  rect.setFillColor(sf::Color::Black);
+  window_->draw(rect);
 }
 void Game::drawField()
 {
