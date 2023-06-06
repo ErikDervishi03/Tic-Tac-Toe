@@ -8,7 +8,7 @@ set(SFML_STATIC_Libraries TRUE)
 set(SFML_DIR D:/Programming/SFML-2.5.1/lib/cmake/SFML) #specify by your own
 set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
 
-add_executable(${CMAKE_PROJECT_NAME} main.cpp figure.cpp)
+add_executable(${CMAKE_PROJECT_NAME} main.cpp figure.cpp cross.cpp cross.h)
 
 find_package(SFML COMPONENTS system window graphics audio network REQUIRED)
 link_directories(D:/Programming/SFML-2.5.1/lib/cmake/SFML)
