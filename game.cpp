@@ -112,6 +112,8 @@ void Game::render()
   window_->clear(sf::Color::Yellow);
   drawField();
 
+
+
   //Draw game objects
   window_->display();
 }
