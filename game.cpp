@@ -1,4 +1,5 @@
 #include "game.h"
+#include "cross.h"
 Game::Game():
   videoMode_(600, 600),
   ev_()
@@ -87,6 +88,8 @@ void Game::update()
 void Game::render()
 {
   window_->clear(sf::Color::Yellow);
+  Cross *pcross = new Cross({10, 10}, 5);
+  pcross->draw(window_);
   drawField();
   window_->display();
 }
