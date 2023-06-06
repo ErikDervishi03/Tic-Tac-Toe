@@ -4,13 +4,13 @@ Game::Game():
   videoMode_(600, 600),
   ev_()
 {
-  this->window_ = new sf::RenderWindow(videoMode_, "Tic-Tac-Toe", sf::Style::Titlebar);
-  //this->window_->setFramerateLimit(60); // Optionally, set a framerate limit for the window
+  window_ = new sf::RenderWindow(videoMode_, "Tic-Tac-Toe", sf::Style::Titlebar);
+  //window_->setFramerateLimit(60); // Optionally, set a framerate limit for the window
 }
 //accessors
 bool Game::running() const
 {
-  return this->window_->isOpen();
+  return window_->isOpen();
 }
 void Game::drawLine(sf::Vector2f line, sf::Vector2f pos)
 {
@@ -61,18 +61,18 @@ void Game::drawField()
 void Game::pollEvents()
 {
   // Continuously check for events
-  while (this->window_->pollEvent(this->ev_))
+  while (window_->pollEvent(ev_))
   {
     // Handle different types of events
-    switch (this->ev_.type)
+    switch (ev_.type)
     {
       case sf::Event::Closed: // If the user clicks the close button of the window
-        this->window_->close(); // Close the game window
+        window_->close(); // Close the game window
         break;
       case sf::Event::KeyPressed: // If a key is pressed
-        if (this->ev_.key.code == sf::Keyboard::Escape) // Check if the pressed key is the Escape key
+        if (ev_.key.code == sf::Keyboard::Escape) // Check if the pressed key is the Escape key
         {
-          this->window_->close(); // Close the game window
+          window_->close(); // Close the game window
         }
         break;
       default:
@@ -89,12 +89,13 @@ void Game::updateMousePositions()
       * Mouse position relative to window (Vector2i)
   */
 
-  this->mousePosWindow_ = sf::Mouse::getPosition(*this->window_);
+  mousePosWindow_ = sf::Mouse::getPosition(*window_);
+  std::cout << mousePosWindow_.x << ' ' << mousePosWindow_.y << '\n';
 }
 void Game::update()
 {
-  this->pollEvents();
-  this->updateMousePositions();
+  pollEvents();
+  updateMousePositions();
 }
 void Game::render()
 {
@@ -108,9 +109,9 @@ void Game::render()
       Renders the game objects
   */
   //This line of code clears the previous frame by filling the window with a yellow color
-  this->window_->clear(sf::Color::Yellow);
-  this->drawField();
+  window_->clear(sf::Color::Yellow);
+  drawField();
 
   //Draw game objects
-  this->window_->display();
+  window_->display();
 }
