@@ -9,6 +9,7 @@ Done
 
 Todo
 -[ ] create buttons on the field
+-[ ] static assert size not 9
 -[ ] ...
 -[ ] remove second console window
 -[ ] exe and dlls fix

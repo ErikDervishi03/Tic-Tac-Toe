@@ -2,6 +2,7 @@
 #define TICIACTOEGAME_FIGURE_H
 #include <SFML/System/Vector2.hpp>
 #include <cstddef>
+#include <vector>
 class Figure
 {
 public:
@@ -14,6 +15,7 @@ public:
   size_t getSize() const;
   void setSize(size_t rhs);
 private:
+  std::vector< std::pair< sf::Vector2i, sf::Vector2i >> linesArray_;
   bool isVisible_;
   sf::Vector2i pos_;
   size_t size_;
