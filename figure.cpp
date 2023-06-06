@@ -7,12 +7,6 @@ void Figure::setVisibility(bool status)
 {
   isVisible_ = status;
 }
-Figure::Figure():
-  isVisible_(false),
-  pos_(0, 0),
-  size_(0)
-{
-}
 sf::Vector2i Figure::getPos() const
 {
   return pos_;

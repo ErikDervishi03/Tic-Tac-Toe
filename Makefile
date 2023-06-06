@@ -2,6 +2,7 @@ OS = Windows
 BIN = test
 
 SRC_PRIMARY = main.cpp
+SRC_SECONDARY = cross.cpp figure.cpp
 
 STD = -std=c++14 -Os -s
 
@@ -15,6 +16,6 @@ all:
 ifeq ($(OS), Linux)
 	g++ $(STD) $(LIBS) $(SRC_PRIMARY) $(SRC_SECONDARY) -o $(BIN)
 else
-	g++ $(STD) -I$(SFML_INCLUDE_PATH) -L$(SFML_LIBS_PATH) $(SRC_PRIMARY) $(LINKER_FLAGS) -o $(BIN)
+	g++ $(STD) -I$(SFML_INCLUDE_PATH) -L$(SFML_LIBS_PATH) $(SRC_PRIMARY) $(SRC_SECONDARY) $(LINKER_FLAGS) -o $(BIN)
 	strip test.exe
 endif

@@ -6,8 +6,7 @@
 class Figure
 {
 public:
-  Figure();
-  virtual ~Figure() = 0; //TODO
+  virtual ~Figure() = default;
   bool isVisible() const;
   void setVisibility(bool status);
   sf::Vector2i getPos() const;

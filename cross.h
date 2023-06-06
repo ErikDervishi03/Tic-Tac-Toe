@@ -10,7 +10,7 @@ public:
   explicit Cross(const std::vector< std::pair< sf::Vector2i, sf::Vector2i>> &linesArray);
   ~Cross() override = default;
   void draw(sf::RenderWindow *window);
-private:
   std::vector< std::pair< sf::Vector2i, sf::Vector2i >> linesArray_;
+private:
 };
 #endif

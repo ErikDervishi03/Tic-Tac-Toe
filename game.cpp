@@ -1,5 +1,19 @@
+#include <valarray>
 #include "game.h"
 #include "cross.h"
+namespace
+{
+  float angle(sf::Vector2i a, sf::Vector2i b)
+  {
+    int x1 = a.x;
+    int y1 = a.y;
+    int x2 = b.x;
+    int y2 = b.y;
+    double ang = acos((x1 * x2 + y1 * y2) /
+                      (std::sqrt((double) x1 * x1 + y1 * y1) * std::sqrt((double) x2 * x2 + y2 * y2)));
+    return static_cast< float >(ang);
+  }
+}
 Game::Game():
   videoMode_(600, 600),
   ev_()
@@ -54,6 +68,21 @@ void Game::drawField()
     sf::Vector2f(windowWidth, horizontalLineThickness),
     sf::Vector2f(0.f, windowHeight * (2.0f / 3.0f) - horizontalLineThickness / 2.f)
   );
+  Cross *pcross = new Cross({100, 100}, 70);
+  //pcross->draw(window_);
+  for (auto &linePair: pcross->linesArray_)
+  {
+    sf::Vector2i start = linePair.first;
+    sf::Vector2i end = linePair.second;
+    std::cout << start.x << ' ' << start.y << '\n';
+    std::cout << end.x << ' ' << end.y << "\n\n";
+    float length = static_cast< float >(std::sqrt(2) * (start.x - end.x));
+    sf::RectangleShape drawableLine(sf::Vector2f(length, 5.f));
+    drawableLine.rotate(angle(start, end));
+    drawableLine.setPosition(500, 500);
+    drawableLine.setFillColor(sf::Color::Black);
+    window_->draw(drawableLine);
+  }
 }
 void Game::pollEvents()
 {
@@ -78,7 +107,7 @@ void Game::pollEvents()
 void Game::updateMousePositions()
 {
   mousePosWindow_ = sf::Mouse::getPosition(*window_);
-  std::cout << mousePosWindow_.x << ' ' << mousePosWindow_.y << '\n';
+  //std::cout << mousePosWindow_.x << ' ' << mousePosWindow_.y << '\n';
 }
 void Game::update()
 {
@@ -88,8 +117,6 @@ void Game::update()
 void Game::render()
 {
   window_->clear(sf::Color::Yellow);
-  Cross *pcross = new Cross({10, 10}, 5);
-  pcross->draw(window_);
   drawField();
   window_->display();
 }

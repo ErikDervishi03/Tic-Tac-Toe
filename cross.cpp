@@ -1,15 +1,12 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <valarray>
+#include <iostream>
 #include "cross.h"
 namespace
 {
   sf::Vector2i addVector(sf::Vector2i a, sf::Vector2i b)
   {
     return {a.x + b.x, a.y + b.y};
-  }
-  sf::Vector2i subtractVector(sf::Vector2i a, sf::Vector2i b)
-  {
-    return {a.x - b.x, a.y - b.y};
   }
   float angle(sf::Vector2i a, sf::Vector2i b)
   {
@@ -30,6 +27,7 @@ Cross::Cross(const std::vector< std::pair< sf::Vector2i, sf::Vector2i >> &linesA
 Cross::Cross(sf::Vector2i pos, size_t size)
 {
   int halfSize = static_cast< int >(size / 2);
+  pos = {100, 100};
   sf::Vector2i topLeft = addVector({-halfSize, halfSize}, pos);
   sf::Vector2i topRight = addVector({halfSize, halfSize}, pos);
   sf::Vector2i bottomRight = addVector({halfSize, -halfSize}, pos);
@@ -39,12 +37,16 @@ Cross::Cross(sf::Vector2i pos, size_t size)
 }
 void Cross::draw(sf::RenderWindow *window)
 {
-  for (auto &line: linesArray_)
+  for (auto &linePair: linesArray_)
   {
-    sf::Vector2i start = line.first;
-    sf::Vector2i end = line.second;
-    sf::RectangleShape drawableLine(static_cast< sf::Vector2f >(subtractVector(end, start)));
+    sf::Vector2i start = linePair.first;
+    sf::Vector2i end = linePair.second;
+    std::cout << start.x << ' ' << start.y << '\n';
+    std::cout << end.x << ' ' << end.y << "\n\n";
+    float length = static_cast< float >(std::sqrt(2) * (start.x - end.x));
+    sf::RectangleShape drawableLine(sf::Vector2f(length, 5.f));
     drawableLine.rotate(angle(start, end));
+    drawableLine.setFillColor(sf::Color::Black);
     window->draw(drawableLine);
   }
 }
