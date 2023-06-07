@@ -5,28 +5,54 @@
 namespace
 {
   sf::Vector2f
-  getFigurePos(float squareSize, bool inLeftPart, bool inMidXPart, bool inRightPart, bool inUpPart, bool inMidYPart,
-               bool inLowerPart)
+  getFigurePos(float squareSize, bool left, bool midX, bool right, bool up, bool midY, bool lower)
   {
-    int case_ = 10 * inLeftPart + inUpPart;
-    float crossPosX;
-    float crossPosY;
-    switch (case_)
+    if (left)
     {
-      case 11:
-        return {squareSize / 2, squareSize / 2};
-      case 10:
-        return {squareSize / 2, inMidYPart ? squareSize * 3 / 2 : squareSize * 5 / 2};
-      case 1:
-        return {inMidXPart ? squareSize * 3 / 2 : squareSize * 5 / 2, squareSize / 2};
-      case 0:
-        crossPosX = inMidXPart ? squareSize * 3 / 2 : squareSize * 5 / 2;
-        crossPosY = inMidYPart ? squareSize * 3 / 2 : squareSize * 5 / 2;
-        return {crossPosX, crossPosY};
-      default:
-        break;
+      if (up)
+      {
+        return {squareSize / 2.f, squareSize / 2.f};
+      }
+      if (midY)
+      {
+        return {squareSize / 2.f, squareSize * 3.f / 2.f};
+      }
+      if (lower)
+      {
+        return {squareSize / 2.f, squareSize * 5.f / 2.f};
+      }
     }
-    return {-1, -1};
+    else if (midX)
+    {
+      if (up)
+      {
+        return {squareSize * 3.f / 2.f, squareSize / 2.f};
+      }
+      if (midY)
+      {
+        return {squareSize * 3.f / 2.f, squareSize * 3.f / 2.f};
+      }
+      if (lower)
+      {
+        return {squareSize * 3.f / 2.f, squareSize * 5.f / 2.f};
+      }
+    }
+    else if (right)
+    {
+      if (up)
+      {
+        return {squareSize * 5.f / 2.f, squareSize / 2.f};
+      }
+      if (midY)
+      {
+        return {squareSize * 5.f / 2.f, squareSize * 3.f / 2.f};
+      }
+      if (lower)
+      {
+        return {squareSize * 5.f / 2.f, squareSize * 5.f / 2.f};
+      }
+    }
+    return {-1.f, -1.f};
   }
 }
 Game::Game(sf::VideoMode videoMode, const std::string &title):
@@ -59,16 +85,6 @@ void Game::drawField()
   pRightVertical->drawLine(window_, sf::Color::Black, vertThickness);
   pUpperVertical->drawLine(window_, sf::Color::Black, horizThickness);
   pLowerVertical->drawLine(window_, sf::Color::Black, horizThickness);
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
   sf::Vector2f mousePosWindow = getMousePosition();
   bool inLeftPart = (mousePosWindow.x > 0) && (mousePosWindow.x < squareSize);
   bool inMidXPart = (mousePosWindow.x > squareSize) && (mousePosWindow.x < 2 * squareSize);
@@ -79,54 +95,11 @@ void Game::drawField()
   sf::Vector2f crossPos{
     getFigurePos(squareSize, inLeftPart, inMidXPart, inRightPart, inUpPart, inMidYPart, inLowerPart)
   };
-  if (inLeftPart && inUpPart)
-  {
-    crossPos = {squareSize / 2, squareSize / 2};
-  }
-  else if (inLeftPart && inMidYPart)
-  {
-    crossPos = {squareSize / 2, squareSize * 3 / 2};
-  }
-  else if (inLeftPart && inLowerPart)
-  {
-    crossPos = {squareSize / 2, squareSize * 5 / 2};
-  }
-  else if (inMidXPart && inUpPart)
-  {
-    crossPos = {squareSize * 3 / 2, squareSize / 2};
-  }
-  else if (inMidXPart && inMidYPart)
-  {
-    crossPos = {squareSize * 3 / 2, squareSize * 3 / 2};
-  }
-  else if (inMidXPart && inLowerPart)
-  {
-    crossPos = {squareSize * 3 / 2, squareSize * 5 / 2};
-  }
-  else if (inRightPart && inUpPart)
-  {
-    crossPos = {squareSize * 5 / 2, squareSize / 2};
-  }
-  else if (inRightPart && inMidYPart)
-  {
-    crossPos = {squareSize * 5 / 2, squareSize * 3 / 2};
-  }
-  else if (inRightPart && inLowerPart)
-  {
-    crossPos = {squareSize * 5 / 2, squareSize * 5 / 2};
-  }
-  else
-  {
-    crossPos = {-squareSize, -squareSize};
-  }
-  Cross *pcross = new Cross(crossPos, squareSize / 2.f, sf::Color::Black, 10.f);
-  pcross->draw(window_);
-/*
-  if (crossPos.x != -1 && crossPos.y != -1)
+  if (crossPos.x != -1.f && crossPos.y != -1.f)
   {
     Cross *pcross = new Cross(crossPos, squareSize / 2.f, sf::Color::Black, 10.f);
     pcross->draw(window_);
-  }*/
+  }
 }
 void Game::pollEvents()
 {
