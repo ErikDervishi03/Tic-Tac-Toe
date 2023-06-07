@@ -13,7 +13,6 @@ public:
   ~Game() = default;
   bool running() const;
   void drawField();
-  //void drawLine(sf::Vector2f line, sf::Vector2f pos);
   void pollEvents();
   void updateMousePositions();
   void update();

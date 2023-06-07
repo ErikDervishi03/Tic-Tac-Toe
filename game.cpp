@@ -2,19 +2,6 @@
 #include "game.h"
 #include "cross.h"
 #include "line.h"
-namespace
-{
-  float angle(sf::Vector2i a, sf::Vector2i b)
-  {
-    int x1 = a.x;
-    int y1 = a.y;
-    int x2 = b.x;
-    int y2 = b.y;
-    double ang = acos((x1 * x2 + y1 * y2) /
-                      (std::sqrt((double) x1 * x1 + y1 * y1) * std::sqrt((double) x2 * x2 + y2 * y2)));
-    return static_cast< float >(ang);
-  }
-}
 Game::Game():
   videoMode_(600, 600),
   ev_()
@@ -25,13 +12,6 @@ bool Game::running() const
 {
   return window_->isOpen();
 }
-/*void Game::drawLine(sf::Vector2f line, sf::Vector2f pos)
-{
-  sf::RectangleShape rect(line);
-  rect.setPosition(pos);
-  rect.setFillColor(sf::Color::Black);
-  window_->draw(rect);
-}*/
 void Game::drawField()
 {
   sf::Vector2u windowSize = window_->getSize();
@@ -39,42 +19,24 @@ void Game::drawField()
   float windowHeight = static_cast< float >(windowSize.y);
   float vertThickness = 5.f;
   float horizThickness = 5.f;
-
-  /*
-        v1   v2
-         |    |
-    h1---|----|---
-         |    |
-    h2---|----|---
-         |    |
-  */
-
-//  //v1
-//  drawLine(
-//    sf::Vector2f(verticalLineThickness, windowHeight),
-//    sf::Vector2f(windowWidth * (1.0f / 3.0f) - verticalLineThickness / 2.f, 0.f)
-//  );
   float squareSize = windowWidth * (1.0f / 3.0f);
-  /*Line *pLeftVertical = new Line({squareSize - vertThickness / 2.f, 0.f},
-                                 {squareSize - vertThickness / 2.f, windowHeight});*/
-  //Line *pLeftVertical = new Line({0.f, 0.f},
-  //                               {100.f, 100.f});
-  //pLeftVertical->drawLine(window_, sf::Color::Black, vertThickness);
-//  //v2
-//  drawLine(
-//    sf::Vector2f(verticalLineThickness, windowHeight),
-//    sf::Vector2f(windowWidth * (2.0f / 3.0f) - verticalLineThickness / 2.f, 0.f)
-//  );
-//  //h1
-//  drawLine(
-//    sf::Vector2f(windowWidth, horizontalLineThickness),
-//    sf::Vector2f(0.f, windowHeight / 3.f - horizontalLineThickness / 2.f)
-//  );
-//  //h2
-//  drawLine(
-//    sf::Vector2f(windowWidth, horizontalLineThickness),
-//    sf::Vector2f(0.f, windowHeight * (2.0f / 3.0f) - horizontalLineThickness / 2.f)
-//  );
+  Line *pLeftVertical = new Line({squareSize - vertThickness / 2.f, 0.f},
+                                 {squareSize - vertThickness / 2.f, windowHeight});
+  Line *pRightVertical = new Line({2 * squareSize - vertThickness / 2.f, 0.f},
+                                  {2 * squareSize - vertThickness / 2.f, windowHeight});
+  Line *pUpperVertical = new Line({0.f, squareSize - vertThickness / 2.f},
+                                  {windowWidth, squareSize - vertThickness / 2.f});
+  Line *pLowerVertical = new Line({0.f, 2 * squareSize - vertThickness / 2.f},
+                                  {windowWidth, 2 * squareSize - vertThickness / 2.f});
+  pLeftVertical->drawLine(window_, sf::Color::Black, vertThickness);
+  pRightVertical->drawLine(window_, sf::Color::Black, vertThickness);
+  pUpperVertical->drawLine(window_, sf::Color::Black, horizThickness);
+  pLowerVertical->drawLine(window_, sf::Color::Black, horizThickness);
+  //
+  //
+  //
+  //
+  //
   Cross *pcross = new Cross({100, 100}, 70);
   //pcross->draw(window_);
   for (auto &linePair: pcross->linesArray_)
@@ -87,8 +49,6 @@ void Game::drawField()
     Line *pline = new Line(start, end);
     pline->drawLine(window_, sf::Color::Black, 5.f);
   }
-  Line *pline = new Line({0, 0}, {600, 600});
-  pline->drawLine(window_, sf::Color::Black, 5.f);
 }
 void Game::pollEvents()
 {
