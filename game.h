@@ -14,13 +14,12 @@ public:
   bool running() const;
   void drawField();
   void pollEvents();
-  void updateMousePositions();
   void update();
   void render();
+  sf::Vector2f getMousePosition();
 private:
   sf::RenderWindow *window_;
   sf::Event ev_;
   sf::VideoMode videoMode_;
-  sf::Vector2i mousePosWindow_;
 };
 #endif
