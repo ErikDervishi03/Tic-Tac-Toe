@@ -1,4 +1,5 @@
 #include <valarray>
+#include <random>
 #include "game.h"
 #include "cross.h"
 #include "line.h"
@@ -85,6 +86,39 @@ namespace
       line.drawLine(window, lineColor, horizThickness);
     }
   }
+  void
+  drawFigures(sf::RenderWindow *window_, const float squareSize,
+              const float windowWidth, const float windowHeight,
+              const sf::Vector2f mousePosWindow,
+              const sf::Color crossColor)
+  {
+    bool inLeftPart = (mousePosWindow.x > 0) && (mousePosWindow.x < squareSize);
+    bool inMidXPart = (mousePosWindow.x > squareSize) && (mousePosWindow.x < 2 * squareSize);
+    bool inRightPart = (mousePosWindow.x > 2 * squareSize) && (mousePosWindow.x < windowWidth);
+    bool inUpPart = (mousePosWindow.y > 0) && (mousePosWindow.y < squareSize);
+    bool inMidYPart = (mousePosWindow.y > squareSize) && (mousePosWindow.y < 2 * squareSize);
+    bool inLowerPart = (mousePosWindow.y > 2 * squareSize) && (mousePosWindow.y < windowHeight);
+    sf::Vector2f crossPos{
+      getFigurePos(squareSize,
+                   inLeftPart, inMidXPart, inRightPart,
+                   inUpPart, inMidYPart, inLowerPart)
+    };
+    if (crossPos.x != -1.f && crossPos.y != -1.f)
+    {
+      Cross *pcross = new Cross(crossPos, squareSize / 2.f, crossColor, 10.f);
+      pcross->draw(window_);
+    }
+  }
+  sf::Color generateRandomColor()
+  {
+    std::random_device rd;
+    std::mt19937 mt(rd());
+    std::uniform_real_distribution< double > dist(100, 255);
+    int red = static_cast<int>(dist(mt));
+    int blue = static_cast<int>(dist(mt));
+    int green = static_cast<int>(dist(mt));
+    return sf::Color(red, green, blue);
+  }
 }
 Game::Game(sf::VideoMode videoMode, const std::string &title):
   videoMode_(videoMode),
@@ -100,30 +134,15 @@ void Game::drawField()
 {
   sf::Vector2u windowSize = window_->getSize();
   const sf::Color lineColor = sf::Color::Black;
-  const sf::Color crossColor = sf::Color::Red;
+  const sf::Color crossColor = sf::Color::Red/*generateRandomColor()*/;
   const float windowWidth = static_cast<float>(windowSize.x);
   const float windowHeight = static_cast<float>(windowSize.y);
   const float vertThickness = 5.f;
   const float horizThickness = 5.f;
   const float squareSize = windowWidth * (1.0f / 3.0f);
-  drawLines(window_, squareSize, windowWidth, windowHeight, vertThickness, horizThickness, lineColor);
   sf::Vector2f mousePosWindow = getMousePosition();
-  bool inLeftPart = (mousePosWindow.x > 0) && (mousePosWindow.x < squareSize);
-  bool inMidXPart = (mousePosWindow.x > squareSize) && (mousePosWindow.x < 2 * squareSize);
-  bool inRightPart = (mousePosWindow.x > 2 * squareSize) && (mousePosWindow.x < windowWidth);
-  bool inUpPart = (mousePosWindow.y > 0) && (mousePosWindow.y < squareSize);
-  bool inMidYPart = (mousePosWindow.y > squareSize) && (mousePosWindow.y < 2 * squareSize);
-  bool inLowerPart = (mousePosWindow.y > 2 * squareSize) && (mousePosWindow.y < windowHeight);
-  sf::Vector2f crossPos{
-    getFigurePos(squareSize,
-                 inLeftPart, inMidXPart, inRightPart,
-                 inUpPart, inMidYPart, inLowerPart)
-  };
-  if (crossPos.x != -1.f && crossPos.y != -1.f)
-  {
-    Cross *pcross = new Cross(crossPos, squareSize / 2.f, crossColor, 10.f);
-    pcross->draw(window_);
-  }
+  drawLines(window_, squareSize, windowWidth, windowHeight, vertThickness, horizThickness, lineColor);
+  drawFigures(window_, squareSize, windowWidth, windowHeight, mousePosWindow, crossColor);
 }
 void Game::pollEvents()
 {
