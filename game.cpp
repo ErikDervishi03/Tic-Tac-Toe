@@ -55,9 +55,11 @@ void Game::drawField()
 //    sf::Vector2f(windowWidth * (1.0f / 3.0f) - verticalLineThickness / 2.f, 0.f)
 //  );
   float squareSize = windowWidth * (1.0f / 3.0f);
-  Line *pLeftVertical = new Line({squareSize - vertThickness / 2.f, 0.f},
-                                 {squareSize - vertThickness / 2.f, windowHeight});
-  pLeftVertical->drawLine(window_, sf::Color::Black, vertThickness);
+  /*Line *pLeftVertical = new Line({squareSize - vertThickness / 2.f, 0.f},
+                                 {squareSize - vertThickness / 2.f, windowHeight});*/
+  //Line *pLeftVertical = new Line({0.f, 0.f},
+  //                               {100.f, 100.f});
+  //pLeftVertical->drawLine(window_, sf::Color::Black, vertThickness);
 //  //v2
 //  drawLine(
 //    sf::Vector2f(verticalLineThickness, windowHeight),
@@ -85,6 +87,8 @@ void Game::drawField()
     Line *pline = new Line(start, end);
     pline->drawLine(window_, sf::Color::Black, 5.f);
   }
+  Line *pline = new Line({0, 0}, {600, 600});
+  pline->drawLine(window_, sf::Color::Black, 5.f);
 }
 void Game::pollEvents()
 {

@@ -1,16 +1,24 @@
 #include <valarray>
 #include "mathfuncs.h"
-sf::Vector2f math::addVector(sf::Vector2f a, sf::Vector2f b)
+namespace
 {
-  return {a.x + b.x, a.y + b.y};
+  constexpr double pi()
+  {
+    return std::atan(1) * 4;
+  }
+}
+sf::Vector2f math::addVector(sf::Vector2f pointA, sf::Vector2f pointB)
+{
+  return {pointA.x + pointB.x, pointA.y + pointB.y};
+}
+sf::Vector2f math::subtVector(sf::Vector2f pointA, sf::Vector2f pointB)
+{
+  return {pointA.x - pointB.x, pointA.y - pointB.y};
 }
 float math::angle(sf::Vector2f a, sf::Vector2f b)
 {
-  float x1 = a.x;
-  float y1 = a.y;
-  float x2 = b.x;
-  float y2 = b.y;
-  double ang = acos((x1 * x2 + y1 * y2) /
-                    (std::sqrt((double) x1 * x1 + y1 * y1) * std::sqrt((double) x2 * x2 + y2 * y2)));
-  return static_cast< float >(ang);
+  sf::Vector2f vector = subtVector(b, a);
+  float angleRadians = std::atan2(vector.y, vector.x);
+  float angleDegrees = angleRadians * 180.f / static_cast< float >(pi());
+  return angleDegrees;
 }
