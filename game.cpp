@@ -37,7 +37,7 @@ void Game::drawField()
   //
   //
   //
-  Cross *pcross = new Cross({squareSize / 2, squareSize / 2}, squareSize, sf::Color::Black, 5.f);
+  Cross *pcross = new Cross({squareSize / 2, squareSize / 2}, squareSize / 2.f, sf::Color::Black, 10.f);
   pcross->draw(window_);
 }
 void Game::pollEvents()

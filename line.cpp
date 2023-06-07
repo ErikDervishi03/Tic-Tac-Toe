@@ -18,7 +18,7 @@ void Line::drawLine(sf::RenderWindow *window, sf::Color color, float thickness)
   float length = std::sqrt(squareLengthX + squareLengthY);
   sf::RectangleShape drawableLine(sf::Vector2f(length, thickness));
   drawableLine.rotate(math::angle(start_, end_));
-  drawableLine.setPosition(start_);
+  drawableLine.setPosition(start_.x, start_.y/* - thickness*/); //TODO
   drawableLine.setFillColor(color);
   window->draw(drawableLine);
 }
