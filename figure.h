@@ -7,16 +7,15 @@ class Figure
 {
 public:
   virtual ~Figure() = default;
-  bool isVisible() const;
-  void setVisibility(bool status);
-  sf::Vector2f getPos() const;
-  void setPos(sf::Vector2f rhs);
-  size_t getSize() const;
-  void setSize(size_t rhs);
-private:
-  std::vector< std::pair< sf::Vector2f, sf::Vector2f >> linesArray_;
-  bool isVisible_;
+  virtual bool isVisible() const = 0;
+  virtual sf::Vector2f getPos() const = 0;
+  virtual size_t getSize() const = 0;
+  virtual void setVisibility(bool status) = 0;
+  virtual void setPos(sf::Vector2f rhs) = 0;
+  virtual void setSize(size_t rhs) = 0;
+protected:
+  bool isVisible_ = false;
   sf::Vector2f pos_;
-  size_t size_;
+  size_t size_ = 0;
 };
 #endif
