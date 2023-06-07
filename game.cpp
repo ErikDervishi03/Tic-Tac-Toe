@@ -1,129 +1,181 @@
+#include <valarray>
+#include <random>
 #include "game.h"
-//private
-void Game::initializeVariables()
+#include "cross.h"
+#include "line.h"
+namespace
 {
-  this->window = nullptr;
+  sf::Vector2f getFigurePos(float squareSize, bool left, bool midX, bool right, bool up, bool midY, bool lower)
+  {
+    if (left)
+    {
+      if (up)
+      {
+        return {squareSize / 2.f, squareSize / 2.f};
+      }
+      if (midY)
+      {
+        return {squareSize / 2.f, squareSize * 3.f / 2.f};
+      }
+      if (lower)
+      {
+        return {squareSize / 2.f, squareSize * 5.f / 2.f};
+      }
+    }
+    else if (midX)
+    {
+      if (up)
+      {
+        return {squareSize * 3.f / 2.f, squareSize / 2.f};
+      }
+      if (midY)
+      {
+        return {squareSize * 3.f / 2.f, squareSize * 3.f / 2.f};
+      }
+      if (lower)
+      {
+        return {squareSize * 3.f / 2.f, squareSize * 5.f / 2.f};
+      }
+    }
+    else if (right)
+    {
+      if (up)
+      {
+        return {squareSize * 5.f / 2.f, squareSize / 2.f};
+      }
+      if (midY)
+      {
+        return {squareSize * 5.f / 2.f, squareSize * 3.f / 2.f};
+      }
+      if (lower)
+      {
+        return {squareSize * 5.f / 2.f, squareSize * 5.f / 2.f};
+      }
+    }
+    return {-1.f, -1.f};
+  }
+  void drawLines(sf::RenderWindow *window, const float squareSize,
+                 const float windowWidth, const float windowHeight,
+                 const float vertThickness, const float horizThickness,
+                 sf::Color lineColor)
+  {
+    std::vector< Line > verticalLines;
+    std::vector< Line > horizontalLines;
+    const int numVerticalLines = static_cast< int >(windowWidth / squareSize) - 1;
+    const int numHorizontalLines = static_cast< int >(windowHeight / squareSize) - 1;
+    for (int i = 1; i <= numVerticalLines; ++i)
+    {
+      float x = i * squareSize;
+      sf::Vector2f startPointX{x - vertThickness / 2.f, 0.f};
+      sf::Vector2f endPointX{x - vertThickness / 2.f, windowHeight};
+      verticalLines.emplace_back(startPointX, endPointX);
+    }
+    for (int i = 1; i <= numHorizontalLines; ++i)
+    {
+      float y = i * squareSize;
+      sf::Vector2f startPointY{0.f, y - horizThickness / 2.f};
+      sf::Vector2f endPointY{windowWidth, y - horizThickness / 2.f};
+      horizontalLines.emplace_back(startPointY, endPointY);
+    }
+    for (const auto &line: verticalLines)
+    {
+      line.drawLine(window, lineColor, vertThickness);
+    }
+    for (const auto &line: horizontalLines)
+    {
+      line.drawLine(window, lineColor, horizThickness);
+    }
+  }
+  void
+  drawFigures(sf::RenderWindow *window_, const float squareSize,
+              const float windowWidth, const float windowHeight,
+              const sf::Vector2f mousePosWindow,
+              const sf::Color crossColor)
+  {
+    bool inLeftPart = (mousePosWindow.x > 0) && (mousePosWindow.x < squareSize);
+    bool inMidXPart = (mousePosWindow.x > squareSize) && (mousePosWindow.x < 2 * squareSize);
+    bool inRightPart = (mousePosWindow.x > 2 * squareSize) && (mousePosWindow.x < windowWidth);
+    bool inUpPart = (mousePosWindow.y > 0) && (mousePosWindow.y < squareSize);
+    bool inMidYPart = (mousePosWindow.y > squareSize) && (mousePosWindow.y < 2 * squareSize);
+    bool inLowerPart = (mousePosWindow.y > 2 * squareSize) && (mousePosWindow.y < windowHeight);
+    sf::Vector2f crossPos{
+      getFigurePos(squareSize,
+                   inLeftPart, inMidXPart, inRightPart,
+                   inUpPart, inMidYPart, inLowerPart)
+    };
+    if (crossPos.x != -1.f && crossPos.y != -1.f)
+    {
+      Cross *pcross = new Cross(crossPos, squareSize / 2.f, crossColor, 10.f);
+      pcross->draw(window_);
+    }
+  }
+  sf::Color generateRandomColor()
+  {
+    std::random_device rd;
+    std::mt19937 mt(rd());
+    std::uniform_real_distribution< double > dist(100, 255);
+    int red = static_cast<int>(dist(mt));
+    int blue = static_cast<int>(dist(mt));
+    int green = static_cast<int>(dist(mt));
+    return sf::Color(red, green, blue);
+  }
 }
-void Game::initWindow()
+Game::Game(sf::VideoMode videoMode, const std::string &title):
+  videoMode_(videoMode),
+  ev_()
 {
-  this->videoMode.height = 400;
-  this->videoMode.width = 400;
-  this->window = new sf::RenderWindow(this->videoMode, "Tic-Tac-Toe", sf::Style::Titlebar);
-  this->window->setFramerateLimit(60); // Optionally, set a framerate limit for the window
+  window_ = new sf::RenderWindow(videoMode_, title, sf::Style::Titlebar);
 }
-//construtor / destructors
-Game::Game()
+bool Game::running() const
 {
-  this->initializeVariables();
-  this->initWindow();
+  return window_->isOpen();
 }
-Game::~Game()
+void Game::drawField()
 {
-  delete this->window;
-}
-
-//accessors
-const bool Game::running() const
-{
-  return this->window->isOpen();
-}
-
-//functions
-void Game::DrawField()
-{
-  sf::Vector2u windowSize = window->getSize();
-  float windowWidth = static_cast< float >(windowSize.x);
-  float windowHeight = static_cast< float >(windowSize.y);
-  float verticalLineThickness = 5.f;
-  float horizontalLineThickness = 5.f;
-
-  //v1
-  sf::RectangleShape verticalLine1(sf::Vector2f(verticalLineThickness, windowHeight));
-  verticalLine1.setPosition(sf::Vector2f(windowWidth * (1.0f / 3.0f) - verticalLineThickness / 2.f, 0.f));
-  verticalLine1.setFillColor(sf::Color::Black);
-  window->draw(verticalLine1);
-  //v2
-  sf::RectangleShape verticalLine2(sf::Vector2f(verticalLineThickness, windowHeight));
-  verticalLine2.setPosition(sf::Vector2f(windowWidth * (2.0f / 3.0f) - verticalLineThickness / 2.f, 0.f));
-  verticalLine2.setFillColor(sf::Color::Black);
-  window->draw(verticalLine2);
-  //h1
-  sf::RectangleShape horizontalLine1(sf::Vector2f(windowWidth, horizontalLineThickness));
-  horizontalLine1.setPosition(sf::Vector2f(0.f, windowHeight / 3.f - horizontalLineThickness / 2.f));
-  horizontalLine1.setFillColor(sf::Color::Black);
-  window->draw(horizontalLine1);
-  //h2
-  sf::RectangleShape horizontalLine2(sf::Vector2f(windowWidth, horizontalLineThickness));
-  horizontalLine2.setPosition(sf::Vector2f(0.f, windowHeight * (2.0f / 3.0f) - horizontalLineThickness / 2.f));
-  horizontalLine2.setFillColor(sf::Color::Black);
-  window->draw(horizontalLine2);
-
-  /*
-      v1   v2
-       |    |
-  h1---|----|---
-       |    |
-  h2---|----|---
-       |    |
-  */
+  sf::Vector2u windowSize = window_->getSize();
+  const sf::Color lineColor = sf::Color::Black;
+  const sf::Color crossColor = sf::Color::Red/*generateRandomColor()*/;
+  const float windowWidth = static_cast<float>(windowSize.x);
+  const float windowHeight = static_cast<float>(windowSize.y);
+  const float vertThickness = 5.f;
+  const float horizThickness = 5.f;
+  const float squareSize = windowWidth * (1.0f / 3.0f);
+  sf::Vector2f mousePosWindow = getMousePosition();
+  drawLines(window_, squareSize, windowWidth, windowHeight, vertThickness, horizThickness, lineColor);
+  drawFigures(window_, squareSize, windowWidth, windowHeight, mousePosWindow, crossColor);
 }
 void Game::pollEvents()
 {
-  // Continuously check for events
-  while (this->window->pollEvent(this->ev))
+  while (window_->pollEvent(ev_))
   {
-    // Handle different types of events
-    switch (this->ev.type)
+    switch (ev_.type)
     {
-      // If the user clicks the close button of the window
       case sf::Event::Closed:
-        // Close the game window
-        this->window->close();
+        window_->close();
         break;
-
-        // If a key is pressed
       case sf::Event::KeyPressed:
-        // Check if the pressed key is the Escape key
-        if (this->ev.key.code == sf::Keyboard::Escape)
+        if (ev_.key.code == sf::Keyboard::Escape)
         {
-          // Close the game window
-          this->window->close();
+          window_->close();
         }
+        break;
+      default:
         break;
     }
   }
 }
-void Game::updateMousePositions()
+sf::Vector2f Game::getMousePosition()
 {
-  /*
-  @return void
-
-  updates the mouse position:
-      * Mouse position relative to window (Vector2i)
-  */
-
-  this->mousePosWindow = sf::Mouse::getPosition(*this->window);
+  auto pos = sf::Mouse::getPosition(*window_);
+  return {static_cast< float >(pos.x), static_cast< float >(pos.y)};
 }
 void Game::update()
 {
-  this->pollEvents();
-  this->updateMousePositions();
+  pollEvents();
 }
 void Game::render()
 {
-  /*
-      @return void
-
-      -clear old frame
-      -render objects
-      -display frame in window
-
-      Renders the game objects
-  */
-  //This line of code clears the previous frame by filling the window with a yellow color
-  this->window->clear(sf::Color::Yellow);
-  this->DrawField();
-
-  //Draw game objects
-  this->window->display();
+  window_->clear(sf::Color::Yellow);
+  drawField();
+  window_->display();
 }

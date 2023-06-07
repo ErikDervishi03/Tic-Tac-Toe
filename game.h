@@ -1,39 +1,25 @@
-#pragma once
+#ifndef GAME_H
+#define GAME_H
 #include <iostream>
 #include <vector>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/Audio.hpp>
-#include <SFML/Network.hpp>
-/*
-    class that acts as the game engine
-*/
 class Game
 {
-private:
-  //variables
-  //window
-  sf::RenderWindow *window;
-  sf::Event ev;
-  sf::VideoMode videoMode;
-  //mouse position
-  sf::Vector2i mousePosWindow;
-  //private funtions
-  void initializeVariables();
-  void initWindow();
 public:
-  //Constructors / Destructors
-  Game();
-  virtual ~Game();
-  //Accessors
-  const bool running() const;
-
-  //functions
-
-  void DrawField();
+  Game(sf::VideoMode videoMode, const std::string &title);
+  ~Game() = default;
+  bool running() const;
+  void drawField();
   void pollEvents();
-  void updateMousePositions();
   void update();
   void render();
+  sf::Vector2f getMousePosition();
+private:
+  sf::RenderWindow *window_;
+  sf::Event ev_;
+  sf::VideoMode videoMode_;
 };
+#endif

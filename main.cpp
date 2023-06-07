@@ -1,18 +1,11 @@
-#include <iostream>
 #include "game.cpp"
 int main()
 {
-  //init Game Engine
-  Game game;
-
-  //game loop
+  Game game({600, 600}, "Tic-Tac-Toe");
   while (game.running())
   {
-    //update
     game.update();
-    //Render
     game.render();
   }
-  //end of application
   return 0;
 }
