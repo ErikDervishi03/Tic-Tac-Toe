@@ -7,7 +7,7 @@ Line::Line(sf::Vector2f start, sf::Vector2f end):
   end_(end)
 {
 }
-void Line::drawLine(sf::RenderWindow *window, sf::Color color, float thickness)
+void Line::drawLine(sf::RenderWindow *window, sf::Color color, float thickness) const
 {
   if (!window)
   {

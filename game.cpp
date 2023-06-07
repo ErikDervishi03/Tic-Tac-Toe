@@ -4,8 +4,7 @@
 #include "line.h"
 namespace
 {
-  sf::Vector2f
-  getFigurePos(float squareSize, bool left, bool midX, bool right, bool up, bool midY, bool lower)
+  sf::Vector2f getFigurePos(float squareSize, bool left, bool midX, bool right, bool up, bool midY, bool lower)
   {
     if (left)
     {
@@ -68,25 +67,32 @@ bool Game::running() const
 void Game::drawField()
 {
   sf::Vector2u windowSize = window_->getSize();
-  sf::Color lineColor = sf::Color::Black;
-  sf::Color crossColor = sf::Color::Red;
-  float windowWidth = static_cast< float >(windowSize.x);
-  float windowHeight = static_cast< float >(windowSize.y);
-  float vertThickness = 5.f;
-  float horizThickness = 5.f;
-  float squareSize = windowWidth * (1.0f / 3.0f);
-  Line *pLeftVertical = new Line({squareSize - vertThickness / 2.f, 0.f},
-                                 {squareSize - vertThickness / 2.f, windowHeight});
-  Line *pRightVertical = new Line({2 * squareSize - vertThickness / 2.f, 0.f},
-                                  {2 * squareSize - vertThickness / 2.f, windowHeight});
-  Line *pUpperVertical = new Line({0.f, squareSize - vertThickness / 2.f},
-                                  {windowWidth, squareSize - vertThickness / 2.f});
-  Line *pLowerVertical = new Line({0.f, 2 * squareSize - vertThickness / 2.f},
-                                  {windowWidth, 2 * squareSize - vertThickness / 2.f});
-  pLeftVertical->drawLine(window_, lineColor, vertThickness);
-  pRightVertical->drawLine(window_, lineColor, vertThickness);
-  pUpperVertical->drawLine(window_, lineColor, horizThickness);
-  pLowerVertical->drawLine(window_, lineColor, horizThickness);
+  const sf::Color lineColor = sf::Color::Black;
+  const sf::Color crossColor = sf::Color::Red;
+  const float windowWidth = static_cast< float >(windowSize.x);
+  const float windowHeight = static_cast< float >(windowSize.y);
+  const float vertThickness = 5.f;
+  const float horizThickness = 5.f;
+  const float squareSize = windowWidth * (1.0f / 3.0f);
+  std::vector< Line > verticalLines;
+  std::vector< Line > horizontalLines;
+  for (float x = squareSize; x < windowWidth; x += squareSize)
+  {
+    sf::Vector2f startPointX{x - vertThickness / 2.f, 0.f};
+    sf::Vector2f endPointX{x - vertThickness / 2.f, windowHeight};
+    sf::Vector2f startPointY{0.f, x - horizThickness / 2.f};
+    sf::Vector2f endPointY{windowWidth, x - horizThickness / 2.f};
+    verticalLines.emplace_back(startPointX, endPointX);
+    horizontalLines.emplace_back(startPointY, endPointY);
+  }
+  for (const auto &line: verticalLines)
+  {
+    line.drawLine(window_, lineColor, vertThickness);
+  }
+  for (const auto &line: horizontalLines)
+  {
+    line.drawLine(window_, lineColor, horizThickness);
+  }
   sf::Vector2f mousePosWindow = getMousePosition();
   bool inLeftPart = (mousePosWindow.x > 0) && (mousePosWindow.x < squareSize);
   bool inMidXPart = (mousePosWindow.x > squareSize) && (mousePosWindow.x < 2 * squareSize);
@@ -95,7 +101,9 @@ void Game::drawField()
   bool inMidYPart = (mousePosWindow.y > squareSize) && (mousePosWindow.y < 2 * squareSize);
   bool inLowerPart = (mousePosWindow.y > 2 * squareSize) && (mousePosWindow.y < windowHeight);
   sf::Vector2f crossPos{
-    getFigurePos(squareSize, inLeftPart, inMidXPart, inRightPart, inUpPart, inMidYPart, inLowerPart)
+    getFigurePos(squareSize,
+                 inLeftPart, inMidXPart, inRightPart,
+                 inUpPart, inMidYPart, inLowerPart)
   };
   if (crossPos.x != -1.f && crossPos.y != -1.f)
   {

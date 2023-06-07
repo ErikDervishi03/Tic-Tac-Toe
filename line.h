@@ -8,7 +8,7 @@ class Line
 public:
   Line(sf::Vector2f start, sf::Vector2f end);
   ~Line() = default;
-  void drawLine(sf::RenderWindow *window, sf::Color color, float thickness);
+  void drawLine(sf::RenderWindow *window, sf::Color color, float thickness) const;
 private:
   sf::Vector2f start_;
   sf::Vector2f end_;
