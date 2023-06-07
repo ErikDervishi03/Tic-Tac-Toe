@@ -2,11 +2,11 @@
 #include "game.h"
 #include "cross.h"
 #include "line.h"
-Game::Game():
-  videoMode_(600, 600),
+Game::Game(sf::VideoMode videoMode, const std::string &title):
+  videoMode_(videoMode),
   ev_()
 {
-  window_ = new sf::RenderWindow(videoMode_, "Tic-Tac-Toe", sf::Style::Titlebar);
+  window_ = new sf::RenderWindow(videoMode_, title, sf::Style::Titlebar);
 }
 bool Game::running() const
 {
@@ -37,7 +37,7 @@ void Game::drawField()
   //
   //
   //
-  Cross *pcross = new Cross({100, 100}, 100, sf::Color::Black, 5.f);
+  Cross *pcross = new Cross({squareSize / 2, squareSize / 2}, squareSize / 2, sf::Color::Black, 5.f);
   pcross->draw(window_);
 }
 void Game::pollEvents()

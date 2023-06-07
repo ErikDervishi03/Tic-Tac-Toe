@@ -1,7 +1,7 @@
 #include "game.cpp"
 int main()
 {
-  Game game;
+  Game game({600, 600}, "Tic-Tac-Toe");
   while (game.running())
   {
     game.update();
