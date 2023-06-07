@@ -29,3 +29,27 @@ void Cross::draw(sf::RenderWindow *window)
     line.drawLine(window, color_, thickness_);
   }
 }
+bool Cross::isVisible() const
+{
+  return isVisible_;
+}
+sf::Vector2f Cross::getPos() const
+{
+  return pos_;
+}
+size_t Cross::getSize() const
+{
+  return size_;
+}
+void Cross::setVisibility(bool status)
+{
+  isVisible_ = status;
+}
+void Cross::setPos(sf::Vector2f rhs)
+{
+  pos_ = rhs;
+}
+void Cross::setSize(size_t rhs)
+{
+  size_ = rhs;
+}

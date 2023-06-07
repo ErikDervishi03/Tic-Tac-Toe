@@ -37,15 +37,8 @@ void Game::drawField()
   //
   //
   //
-  Cross *pcross = new Cross({100, 100}, 100);
+  Cross *pcross = new Cross({100, 100}, 100, sf::Color::Black, 5.f);
   pcross->draw(window_);
-  for (auto &linePair: pcross->linesArray_)
-  {
-    sf::Vector2f start = linePair.first;
-    sf::Vector2f end = linePair.second;
-    Line *pline = new Line(start, end);
-    pline->drawLine(window_, sf::Color::Black, 5.f);
-  }
 }
 void Game::pollEvents()
 {
