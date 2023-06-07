@@ -53,6 +53,38 @@ namespace
     }
     return {-1.f, -1.f};
   }
+  void drawLines(sf::RenderWindow *window, const float squareSize,
+                 const float windowWidth, const float windowHeight,
+                 const float vertThickness, const float horizThickness,
+                 sf::Color lineColor)
+  {
+    std::vector< Line > verticalLines;
+    std::vector< Line > horizontalLines;
+    const int numVerticalLines = static_cast< int >(windowWidth / squareSize) - 1;
+    const int numHorizontalLines = static_cast< int >(windowHeight / squareSize) - 1;
+    for (int i = 1; i <= numVerticalLines; ++i)
+    {
+      float x = i * squareSize;
+      sf::Vector2f startPointX{x - vertThickness / 2.f, 0.f};
+      sf::Vector2f endPointX{x - vertThickness / 2.f, windowHeight};
+      verticalLines.emplace_back(startPointX, endPointX);
+    }
+    for (int i = 1; i <= numHorizontalLines; ++i)
+    {
+      float y = i * squareSize;
+      sf::Vector2f startPointY{0.f, y - horizThickness / 2.f};
+      sf::Vector2f endPointY{windowWidth, y - horizThickness / 2.f};
+      horizontalLines.emplace_back(startPointY, endPointY);
+    }
+    for (const auto &line: verticalLines)
+    {
+      line.drawLine(window, lineColor, vertThickness);
+    }
+    for (const auto &line: horizontalLines)
+    {
+      line.drawLine(window, lineColor, horizThickness);
+    }
+  }
 }
 Game::Game(sf::VideoMode videoMode, const std::string &title):
   videoMode_(videoMode),
@@ -69,30 +101,12 @@ void Game::drawField()
   sf::Vector2u windowSize = window_->getSize();
   const sf::Color lineColor = sf::Color::Black;
   const sf::Color crossColor = sf::Color::Red;
-  const float windowWidth = static_cast< float >(windowSize.x);
-  const float windowHeight = static_cast< float >(windowSize.y);
+  const float windowWidth = static_cast<float>(windowSize.x);
+  const float windowHeight = static_cast<float>(windowSize.y);
   const float vertThickness = 5.f;
   const float horizThickness = 5.f;
   const float squareSize = windowWidth * (1.0f / 3.0f);
-  std::vector< Line > verticalLines;
-  std::vector< Line > horizontalLines;
-  for (float x = squareSize; x < windowWidth; x += squareSize)
-  {
-    sf::Vector2f startPointX{x - vertThickness / 2.f, 0.f};
-    sf::Vector2f endPointX{x - vertThickness / 2.f, windowHeight};
-    sf::Vector2f startPointY{0.f, x - horizThickness / 2.f};
-    sf::Vector2f endPointY{windowWidth, x - horizThickness / 2.f};
-    verticalLines.emplace_back(startPointX, endPointX);
-    horizontalLines.emplace_back(startPointY, endPointY);
-  }
-  for (const auto &line: verticalLines)
-  {
-    line.drawLine(window_, lineColor, vertThickness);
-  }
-  for (const auto &line: horizontalLines)
-  {
-    line.drawLine(window_, lineColor, horizThickness);
-  }
+  drawLines(window_, squareSize, windowWidth, windowHeight, vertThickness, horizThickness, lineColor);
   sf::Vector2f mousePosWindow = getMousePosition();
   bool inLeftPart = (mousePosWindow.x > 0) && (mousePosWindow.x < squareSize);
   bool inMidXPart = (mousePosWindow.x > squareSize) && (mousePosWindow.x < 2 * squareSize);
