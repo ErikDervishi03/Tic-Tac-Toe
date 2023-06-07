@@ -5,10 +5,12 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 class Line
 {
-  Line(sf::Vector2i start, sf::Vector2i end);
-  void drawLine(sf::RenderWindow *window, sf::Vector2i start, sf::Vector2i end, sf::Color color, float thickness);
+public:
+  Line(sf::Vector2f start, sf::Vector2f end);
+  ~Line() = default;
+  void drawLine(sf::RenderWindow *window, sf::Color color, float thickness);
 private:
-  sf::Vector2i start_;
-  sf::Vector2i end_;
+  sf::Vector2f start_;
+  sf::Vector2f end_;
 };
 #endif

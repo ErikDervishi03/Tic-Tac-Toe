@@ -3,7 +3,7 @@
 #include <SFML/System/Vector2.hpp>
 namespace math
 {
-  sf::Vector2i addVector(sf::Vector2i a, sf::Vector2i b);
-  float angle(sf::Vector2i a, sf::Vector2i b);
+  sf::Vector2f addVector(sf::Vector2f a, sf::Vector2f b);
+  float angle(sf::Vector2f a, sf::Vector2f b);
 }
 #endif

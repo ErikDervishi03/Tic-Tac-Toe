@@ -7,11 +7,11 @@ void Figure::setVisibility(bool status)
 {
   isVisible_ = status;
 }
-sf::Vector2i Figure::getPos() const
+sf::Vector2f Figure::getPos() const
 {
   return pos_;
 }
-void Figure::setPos(sf::Vector2i rhs)
+void Figure::setPos(sf::Vector2f rhs)
 {
   pos_ = rhs;
 }

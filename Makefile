@@ -2,7 +2,7 @@ OS = Windows
 BIN = test
 
 SRC_PRIMARY = main.cpp
-SRC_SECONDARY = cross.cpp figure.cpp
+SRC_SECONDARY = cross.cpp figure.cpp line.cpp mathfuncs.cpp
 
 STD = -std=c++14 -Os -s
 
