@@ -68,6 +68,8 @@ bool Game::running() const
 void Game::drawField()
 {
   sf::Vector2u windowSize = window_->getSize();
+  sf::Color lineColor = sf::Color::Black;
+  sf::Color crossColor = sf::Color::Red;
   float windowWidth = static_cast< float >(windowSize.x);
   float windowHeight = static_cast< float >(windowSize.y);
   float vertThickness = 5.f;
@@ -81,10 +83,10 @@ void Game::drawField()
                                   {windowWidth, squareSize - vertThickness / 2.f});
   Line *pLowerVertical = new Line({0.f, 2 * squareSize - vertThickness / 2.f},
                                   {windowWidth, 2 * squareSize - vertThickness / 2.f});
-  pLeftVertical->drawLine(window_, sf::Color::Black, vertThickness);
-  pRightVertical->drawLine(window_, sf::Color::Black, vertThickness);
-  pUpperVertical->drawLine(window_, sf::Color::Black, horizThickness);
-  pLowerVertical->drawLine(window_, sf::Color::Black, horizThickness);
+  pLeftVertical->drawLine(window_, lineColor, vertThickness);
+  pRightVertical->drawLine(window_, lineColor, vertThickness);
+  pUpperVertical->drawLine(window_, lineColor, horizThickness);
+  pLowerVertical->drawLine(window_, lineColor, horizThickness);
   sf::Vector2f mousePosWindow = getMousePosition();
   bool inLeftPart = (mousePosWindow.x > 0) && (mousePosWindow.x < squareSize);
   bool inMidXPart = (mousePosWindow.x > squareSize) && (mousePosWindow.x < 2 * squareSize);
@@ -97,7 +99,7 @@ void Game::drawField()
   };
   if (crossPos.x != -1.f && crossPos.y != -1.f)
   {
-    Cross *pcross = new Cross(crossPos, squareSize / 2.f, sf::Color::Black, 10.f);
+    Cross *pcross = new Cross(crossPos, squareSize / 2.f, crossColor, 10.f);
     pcross->draw(window_);
   }
 }
