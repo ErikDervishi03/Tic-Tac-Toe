@@ -11,7 +11,7 @@ Cross::Cross(sf::Vector2f pos, size_t size, sf::Color color, float thickness):
   {
     throw std::invalid_argument("Invalid size for Cross. Size must be greater than zero.");
   }
-  float halfSize = static_cast< float >(std::sqrt(2) * size / 2);
+  float halfSize = static_cast< float >(size / 2);
   sf::Vector2f topLeft = math::addVector({-halfSize, halfSize}, pos);
   sf::Vector2f topRight = math::addVector({halfSize, halfSize}, pos);
   sf::Vector2f bottomRight = math::addVector({halfSize, -halfSize}, pos);
