@@ -91,12 +91,13 @@ namespace
                    const sf::Vector2f mousePosWindow,
                    const sf::Color crossColor)
   {
-    bool inLeftPart = (mousePosWindow.x > 0) && (mousePosWindow.x < squareSize);
-    bool inMidXPart = (mousePosWindow.x > squareSize) && (mousePosWindow.x < 2 * squareSize);
-    bool inRightPart = (mousePosWindow.x > 2 * squareSize) && (mousePosWindow.x < windowWidth);
-    bool inUpPart = (mousePosWindow.y > 0) && (mousePosWindow.y < squareSize);
-    bool inMidYPart = (mousePosWindow.y > squareSize) && (mousePosWindow.y < 2 * squareSize);
-    bool inLowerPart = (mousePosWindow.y > 2 * squareSize) && (mousePosWindow.y < windowHeight);
+    float indent = squareSize / 15.f;
+    bool inLeftPart = (mousePosWindow.x > indent) && (mousePosWindow.x < squareSize - indent);
+    bool inMidXPart = (mousePosWindow.x > squareSize + indent) && (mousePosWindow.x < 2 * squareSize - indent);
+    bool inRightPart = (mousePosWindow.x > 2 * squareSize + indent) && (mousePosWindow.x < windowWidth - indent);
+    bool inUpPart = (mousePosWindow.y > indent) && (mousePosWindow.y < squareSize - indent);
+    bool inMidYPart = (mousePosWindow.y > squareSize + indent) && (mousePosWindow.y < 2 * squareSize - indent);
+    bool inLowerPart = (mousePosWindow.y > 2 * squareSize + indent) && (mousePosWindow.y < windowHeight - indent);
     sf::Vector2f crossPos{
       getFigurePos(squareSize,
                    inLeftPart, inMidXPart, inRightPart,
@@ -132,7 +133,7 @@ namespace
     return {wSize, wSize};
   }
 }
-Game::Game(sf::VideoMode videoMode, const std::string &title):
+Game::Game(const std::string &title):
   videoMode_(calcGameWindowSize()),
   ev_(),
   elapsedTime_(0)

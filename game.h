@@ -9,7 +9,7 @@
 class Game
 {
 public:
-  Game(sf::VideoMode videoMode, const std::string &title);
+  Game(const std::string &title);
   ~Game() = default;
   bool running() const;
   void drawField();
