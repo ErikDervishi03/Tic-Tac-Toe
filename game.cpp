@@ -65,14 +65,14 @@ namespace
     const int numHorizontalLines = static_cast< int >(windowHeight / squareSize) - 1;
     for (int i = 1; i <= numVerticalLines; ++i)
     {
-      float x = i * squareSize;
+      float x = static_cast<float>(i) * squareSize;
       sf::Vector2f startPointX{x - vertThickness / 2.f, 0.f};
       sf::Vector2f endPointX{x - vertThickness / 2.f, windowHeight};
       verticalLines.emplace_back(startPointX, endPointX);
     }
     for (int i = 1; i <= numHorizontalLines; ++i)
     {
-      float y = i * squareSize;
+      float y = static_cast<float>(i) * squareSize;
       sf::Vector2f startPointY{0.f, y - horizThickness / 2.f};
       sf::Vector2f endPointY{windowWidth, y - horizThickness / 2.f};
       horizontalLines.emplace_back(startPointY, endPointY);
@@ -86,11 +86,10 @@ namespace
       line.drawLine(window, lineColor, horizThickness);
     }
   }
-  void
-  drawFigures(sf::RenderWindow *window_, const float squareSize,
-              const float windowWidth, const float windowHeight,
-              const sf::Vector2f mousePosWindow,
-              const sf::Color crossColor)
+  void drawFigures(sf::RenderWindow *window_, const float squareSize,
+                   const float windowWidth, const float windowHeight,
+                   const sf::Vector2f mousePosWindow,
+                   const sf::Color crossColor)
   {
     bool inLeftPart = (mousePosWindow.x > 0) && (mousePosWindow.x < squareSize);
     bool inMidXPart = (mousePosWindow.x > squareSize) && (mousePosWindow.x < 2 * squareSize);
@@ -105,8 +104,8 @@ namespace
     };
     if (crossPos.x != -1.f && crossPos.y != -1.f)
     {
-      Cross *pcross = new Cross(crossPos, squareSize / 2.f, crossColor, 10.f);
-      pcross->draw(window_);
+      Cross *pCross = new Cross(crossPos, static_cast< size_t >(squareSize / 2.f), crossColor, 10.f);
+      pCross->draw(window_);
     }
   }
   sf::Color generateRandomColor()
@@ -117,7 +116,8 @@ namespace
     int red = static_cast<int>(dist(mt));
     int blue = static_cast<int>(dist(mt));
     int green = static_cast<int>(dist(mt));
-    return sf::Color(red, green, blue);
+    sf::Color color(red, green, blue);
+    return color;
   }
 }
 Game::Game(sf::VideoMode videoMode, const std::string &title):
