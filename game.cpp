@@ -169,8 +169,10 @@ sf::Vector2f Game::getMousePosition()
   auto pos = sf::Mouse::getPosition(*window_);
   return {static_cast< float >(pos.x), static_cast< float >(pos.y)};
 }
-void Game::update()
+void Game::update(sf::Clock clock)
 {
+  int seconds = static_cast< int >(clock.restart().asSeconds());
+  std::cout << seconds << '\n';
   pollEvents();
 }
 void Game::render()

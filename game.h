@@ -14,7 +14,7 @@ public:
   bool running() const;
   void drawField();
   void pollEvents();
-  void update();
+  void update(sf::Clock clock);
   void render();
   sf::Vector2f getMousePosition();
 private:
