@@ -105,8 +105,8 @@ namespace
     };
     if (crossPos.x != -1.f && crossPos.y != -1.f)
     {
-      Cross cross(crossPos, static_cast< size_t >(figureSize / 2.f), crossColor, 10.f);
-      cross.draw(window_);
+      Cross *pCross = new Cross(crossPos, static_cast< size_t >(figureSize / 2.f), crossColor, 10.f);
+      pCross->draw(window_);
     }
   }
   sf::Color generateRandomColor()
