@@ -3,12 +3,14 @@ RoadMap:
 if a thing is done, check the checkbox like:
 -[X] i want to create the table of tic tac toe
 
+
 Done
 -[X] draw field
--[X] remove second console window
 
 Todo
 -[ ] create buttons on the field
--[ ] icon
+-[ ] static assert size not 9
+-[ ] ...
+-[ ] remove second console window
 -[ ] exe and dlls fix
 -[ ] ...
