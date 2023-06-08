@@ -119,9 +119,21 @@ namespace
     sf::Color color(red, green, blue);
     return color;
   }
+  sf::VideoMode calcGameWindowSize()
+  {
+    sf::VideoMode desktopMode = sf::VideoMode::getDesktopMode();
+    unsigned int dWidth = desktopMode.width;
+    unsigned int dHeight = desktopMode.height;
+    unsigned int wSize = static_cast<unsigned int>(sqrt(dWidth * dHeight) / 2);
+    if (wSize == 0)
+    {
+      return {600, 600};
+    }
+    return {wSize, wSize};
+  }
 }
 Game::Game(sf::VideoMode videoMode, const std::string &title):
-  videoMode_(videoMode),
+  videoMode_(calcGameWindowSize()),
   ev_(),
   elapsedTime_(0)
 {
