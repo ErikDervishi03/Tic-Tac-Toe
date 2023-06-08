@@ -1,5 +1,4 @@
 #include <SFML/Graphics/RectangleShape.hpp>
-#include <valarray>
 #include "cross.h"
 #include "line.h"
 #include "mathfuncs.h"
