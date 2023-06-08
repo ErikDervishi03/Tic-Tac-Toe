@@ -9,17 +9,18 @@
 class Game
 {
 public:
-  Game(sf::VideoMode videoMode, const std::string &title);
+  Game(const std::string &title);
   ~Game() = default;
   bool running() const;
   void drawField();
   void pollEvents();
-  void update();
+  void update(sf::Clock clock);
   void render();
   sf::Vector2f getMousePosition();
 private:
   sf::RenderWindow *window_;
   sf::Event ev_;
   sf::VideoMode videoMode_;
+  double elapsedTime_;
 };
 #endif

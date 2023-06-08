@@ -1,10 +1,11 @@
 #include "game.cpp"
 int main()
 {
-  Game game({600, 600}, "Tic-Tac-Toe");
+  Game game("Tic-Tac-Toe: Erik Dervishi x FavorIT");
+  sf::Clock clock;
   while (game.running())
   {
-    game.update();
+    game.update(clock);
     game.render();
   }
   return 0;

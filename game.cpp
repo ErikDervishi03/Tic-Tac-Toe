@@ -65,14 +65,14 @@ namespace
     const int numHorizontalLines = static_cast< int >(windowHeight / squareSize) - 1;
     for (int i = 1; i <= numVerticalLines; ++i)
     {
-      float x = i * squareSize;
+      float x = static_cast<float>(i) * squareSize;
       sf::Vector2f startPointX{x - vertThickness / 2.f, 0.f};
       sf::Vector2f endPointX{x - vertThickness / 2.f, windowHeight};
       verticalLines.emplace_back(startPointX, endPointX);
     }
     for (int i = 1; i <= numHorizontalLines; ++i)
     {
-      float y = i * squareSize;
+      float y = static_cast<float>(i) * squareSize;
       sf::Vector2f startPointY{0.f, y - horizThickness / 2.f};
       sf::Vector2f endPointY{windowWidth, y - horizThickness / 2.f};
       horizontalLines.emplace_back(startPointY, endPointY);
@@ -86,18 +86,18 @@ namespace
       line.drawLine(window, lineColor, horizThickness);
     }
   }
-  void
-  drawFigures(sf::RenderWindow *window_, const float squareSize,
-              const float windowWidth, const float windowHeight,
-              const sf::Vector2f mousePosWindow,
-              const sf::Color crossColor)
+  void drawFigures(sf::RenderWindow *window_,
+                   const float squareSize, const float figureSize, const float windowWidth, const float windowHeight,
+                   const sf::Vector2f mousePosWindow,
+                   const sf::Color crossColor)
   {
-    bool inLeftPart = (mousePosWindow.x > 0) && (mousePosWindow.x < squareSize);
-    bool inMidXPart = (mousePosWindow.x > squareSize) && (mousePosWindow.x < 2 * squareSize);
-    bool inRightPart = (mousePosWindow.x > 2 * squareSize) && (mousePosWindow.x < windowWidth);
-    bool inUpPart = (mousePosWindow.y > 0) && (mousePosWindow.y < squareSize);
-    bool inMidYPart = (mousePosWindow.y > squareSize) && (mousePosWindow.y < 2 * squareSize);
-    bool inLowerPart = (mousePosWindow.y > 2 * squareSize) && (mousePosWindow.y < windowHeight);
+    float indent = squareSize / 15.f;
+    bool inLeftPart = (mousePosWindow.x > indent) && (mousePosWindow.x < squareSize - indent);
+    bool inMidXPart = (mousePosWindow.x > squareSize + indent) && (mousePosWindow.x < 2 * squareSize - indent);
+    bool inRightPart = (mousePosWindow.x > 2 * squareSize + indent) && (mousePosWindow.x < windowWidth - indent);
+    bool inUpPart = (mousePosWindow.y > indent) && (mousePosWindow.y < squareSize - indent);
+    bool inMidYPart = (mousePosWindow.y > squareSize + indent) && (mousePosWindow.y < 2 * squareSize - indent);
+    bool inLowerPart = (mousePosWindow.y > 2 * squareSize + indent) && (mousePosWindow.y < windowHeight - indent);
     sf::Vector2f crossPos{
       getFigurePos(squareSize,
                    inLeftPart, inMidXPart, inRightPart,
@@ -105,8 +105,8 @@ namespace
     };
     if (crossPos.x != -1.f && crossPos.y != -1.f)
     {
-      Cross *pcross = new Cross(crossPos, squareSize / 2.f, crossColor, 10.f);
-      pcross->draw(window_);
+      Cross *pCross = new Cross(crossPos, static_cast< size_t >(figureSize / 2.f), crossColor, 10.f);
+      pCross->draw(window_);
     }
   }
   sf::Color generateRandomColor()
@@ -117,12 +117,26 @@ namespace
     int red = static_cast<int>(dist(mt));
     int blue = static_cast<int>(dist(mt));
     int green = static_cast<int>(dist(mt));
-    return sf::Color(red, green, blue);
+    sf::Color color(red, green, blue);
+    return color;
+  }
+  sf::VideoMode calcGameWindowSize()
+  {
+    sf::VideoMode desktopMode = sf::VideoMode::getDesktopMode();
+    unsigned int dWidth = desktopMode.width;
+    unsigned int dHeight = desktopMode.height;
+    unsigned int wSize = static_cast<unsigned int>(sqrt(dWidth * dHeight) / 2);
+    if (wSize == 0)
+    {
+      return {600, 600};
+    }
+    return {wSize, wSize};
   }
 }
-Game::Game(sf::VideoMode videoMode, const std::string &title):
-  videoMode_(videoMode),
-  ev_()
+Game::Game(const std::string &title):
+  videoMode_(calcGameWindowSize()),
+  ev_(),
+  elapsedTime_(0)
 {
   window_ = new sf::RenderWindow(videoMode_, title, sf::Style::Titlebar);
 }
@@ -142,7 +156,9 @@ void Game::drawField()
   const float squareSize = windowWidth * (1.0f / 3.0f);
   sf::Vector2f mousePosWindow = getMousePosition();
   drawLines(window_, squareSize, windowWidth, windowHeight, vertThickness, horizThickness, lineColor);
-  drawFigures(window_, squareSize, windowWidth, windowHeight, mousePosWindow, crossColor);
+  float period = 3;
+  const float figureSize = squareSize - static_cast< float >(0.1f * squareSize * sin(elapsedTime_ * period));
+  drawFigures(window_, squareSize, figureSize, windowWidth, windowHeight, mousePosWindow, crossColor);
 }
 void Game::pollEvents()
 {
@@ -169,8 +185,9 @@ sf::Vector2f Game::getMousePosition()
   auto pos = sf::Mouse::getPosition(*window_);
   return {static_cast< float >(pos.x), static_cast< float >(pos.y)};
 }
-void Game::update()
+void Game::update(sf::Clock clock)
 {
+  elapsedTime_ = clock.restart().asSeconds();
   pollEvents();
 }
 void Game::render()
