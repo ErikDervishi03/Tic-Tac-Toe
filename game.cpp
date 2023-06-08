@@ -86,8 +86,8 @@ namespace
       line.drawLine(window, lineColor, horizThickness);
     }
   }
-  void drawFigures(sf::RenderWindow *window_, const float squareSize,
-                   const float windowWidth, const float windowHeight,
+  void drawFigures(sf::RenderWindow *window_,
+                   const float squareSize, const float figureSize, const float windowWidth, const float windowHeight,
                    const sf::Vector2f mousePosWindow,
                    const sf::Color crossColor)
   {
@@ -104,7 +104,7 @@ namespace
     };
     if (crossPos.x != -1.f && crossPos.y != -1.f)
     {
-      Cross *pCross = new Cross(crossPos, static_cast< size_t >(squareSize / 2.f), crossColor, 10.f);
+      Cross *pCross = new Cross(crossPos, static_cast< size_t >(figureSize / 2.f), crossColor, 10.f);
       pCross->draw(window_);
     }
   }
@@ -122,7 +122,8 @@ namespace
 }
 Game::Game(sf::VideoMode videoMode, const std::string &title):
   videoMode_(videoMode),
-  ev_()
+  ev_(),
+  elapsedTime_(0)
 {
   window_ = new sf::RenderWindow(videoMode_, title, sf::Style::Titlebar);
 }
@@ -142,7 +143,9 @@ void Game::drawField()
   const float squareSize = windowWidth * (1.0f / 3.0f);
   sf::Vector2f mousePosWindow = getMousePosition();
   drawLines(window_, squareSize, windowWidth, windowHeight, vertThickness, horizThickness, lineColor);
-  drawFigures(window_, squareSize, windowWidth, windowHeight, mousePosWindow, crossColor);
+  float period = 3;
+  const float figureSize = squareSize - static_cast< float >(0.1f * squareSize * sin(elapsedTime_ * period));
+  drawFigures(window_, squareSize, figureSize, windowWidth, windowHeight, mousePosWindow, crossColor);
 }
 void Game::pollEvents()
 {
@@ -171,8 +174,7 @@ sf::Vector2f Game::getMousePosition()
 }
 void Game::update(sf::Clock clock)
 {
-  int seconds = static_cast< int >(clock.restart().asSeconds());
-  std::cout << seconds << '\n';
+  elapsedTime_ = clock.restart().asSeconds();
   pollEvents();
 }
 void Game::render()

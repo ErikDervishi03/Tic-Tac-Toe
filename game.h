@@ -21,5 +21,6 @@ private:
   sf::RenderWindow *window_;
   sf::Event ev_;
   sf::VideoMode videoMode_;
+  double elapsedTime_;
 };
 #endif
