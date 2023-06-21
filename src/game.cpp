@@ -1,10 +1,16 @@
 #include <valarray>
 #include <random>
 #include "game.h"
+#include "dto/fielddto.h"
 #include "cross.h"
 #include "line.h"
 namespace
 {
+  float calcFigureSize(float windowWidth, double elapsedTime, float period)
+  {
+    const float squareSize = windowWidth * (1.0f / 3.0f);
+    return squareSize - static_cast< float >(0.1f * squareSize * sin(elapsedTime * period));
+  }
   sf::Vector2f getFigurePos(float squareSize, bool left, bool midX, bool right, bool up, bool midY, bool lower)
   {
     const float halfSize = squareSize / 2.f;
@@ -57,50 +63,46 @@ namespace
     }
     return {-1.f, -1.f};
   }
-  void drawLines(sf::RenderWindow *window, const float squareSize,
-                 const float windowWidth, const float windowHeight,
-                 const float vertThickness, const float horizThickness,
-                 sf::Color lineColor)
+  void drawLines(sf::RenderWindow *window, const FieldDTO &dto)
   {
+    const float squareSize = dto.windowWidth * (1.0f / 3.0f);
     std::vector< Line > verticalLines;
     std::vector< Line > horizontalLines;
-    const int numVerticalLines = static_cast< int >(windowWidth / squareSize) - 1;
-    const int numHorizontalLines = static_cast< int >(windowHeight / squareSize) - 1;
+    const int numVerticalLines = static_cast< int >(dto.windowWidth / squareSize) - 1;
+    const int numHorizontalLines = static_cast< int >(dto.windowHeight / squareSize) - 1;
     for (int i = 1; i <= numVerticalLines; ++i)
     {
-      float x = static_cast<float>(i) * squareSize;
-      sf::Vector2f startPointX{x - vertThickness / 2.f, 0.f};
-      sf::Vector2f endPointX{x - vertThickness / 2.f, windowHeight};
+      float x = static_cast< float >(i) * squareSize;
+      sf::Vector2f startPointX{x - dto.vertThickness / 2.f, 0.f};
+      sf::Vector2f endPointX{x - dto.vertThickness / 2.f, dto.windowHeight};
       verticalLines.emplace_back(startPointX, endPointX);
     }
     for (int i = 1; i <= numHorizontalLines; ++i)
     {
-      float y = static_cast<float>(i) * squareSize;
-      sf::Vector2f startPointY{0.f, y - horizThickness / 2.f};
-      sf::Vector2f endPointY{windowWidth, y - horizThickness / 2.f};
+      float y = static_cast< float >(i) * squareSize;
+      sf::Vector2f startPointY{0.f, y - dto.horizThickness / 2.f};
+      sf::Vector2f endPointY{dto.windowWidth, y - dto.horizThickness / 2.f};
       horizontalLines.emplace_back(startPointY, endPointY);
     }
     for (const auto &line: verticalLines)
     {
-      line.drawLine(window, lineColor, vertThickness);
+      line.drawLine(window, dto.lineColor, dto.vertThickness);
     }
     for (const auto &line: horizontalLines)
     {
-      line.drawLine(window, lineColor, horizThickness);
+      line.drawLine(window, dto.lineColor, dto.horizThickness);
     }
   }
-  void drawFigures(sf::RenderWindow *window_,
-                   const float squareSize, const float figureSize, const float windowWidth, const float windowHeight,
-                   const sf::Vector2f mousePosWindow,
-                   const sf::Color crossColor)
+  void drawFigures(sf::RenderWindow *window, const FieldDTO &dto, const sf::Vector2f mousePosWindow, double elapsedTime)
   {
+    const float squareSize = dto.windowWidth * (1.0f / 3.0f);
     float indent = squareSize / 15.f;
     bool inLeftPart = (mousePosWindow.x > indent) && (mousePosWindow.x < squareSize - indent);
     bool inMidXPart = (mousePosWindow.x > squareSize + indent) && (mousePosWindow.x < 2 * squareSize - indent);
-    bool inRightPart = (mousePosWindow.x > 2 * squareSize + indent) && (mousePosWindow.x < windowWidth - indent);
+    bool inRightPart = (mousePosWindow.x > 2 * squareSize + indent) && (mousePosWindow.x < dto.windowWidth - indent);
     bool inUpPart = (mousePosWindow.y > indent) && (mousePosWindow.y < squareSize - indent);
     bool inMidYPart = (mousePosWindow.y > squareSize + indent) && (mousePosWindow.y < 2 * squareSize - indent);
-    bool inLowerPart = (mousePosWindow.y > 2 * squareSize + indent) && (mousePosWindow.y < windowHeight - indent);
+    bool inLowerPart = (mousePosWindow.y > 2 * squareSize + indent) && (mousePosWindow.y < dto.windowHeight - indent);
     sf::Vector2f crossPos{
       getFigurePos(squareSize,
                    inLeftPart, inMidXPart, inRightPart,
@@ -108,8 +110,9 @@ namespace
     };
     if (crossPos.x != -1.f && crossPos.y != -1.f)
     {
-      Cross *pCross = new Cross(crossPos, static_cast< size_t >(figureSize / 2.f), crossColor, 10.f);
-      pCross->draw(window_);
+      const float figureSize = calcFigureSize(dto.windowWidth, elapsedTime, 3);
+      Cross *pCross = new Cross(crossPos, static_cast< size_t >(figureSize / 2.f), dto.crossColor, 10.f);
+      pCross->draw(window);
     }
   }
   sf::Color generateRandomColor()
@@ -136,10 +139,6 @@ namespace
     return {wSize, wSize};
   }
 }
-float Game::calcFigureSize(float squareSize, float period) const
-{
-  return squareSize - static_cast< float >(0.1f * squareSize * sin(elapsedTime_ * period));
-}
 Game::Game(const std::string &title):
   videoMode_(calcGameWindowSize()),
   ev_(),
@@ -154,17 +153,14 @@ bool Game::running() const
 void Game::drawField()
 {
   sf::Vector2u windowSize = window_->getSize();
-  const sf::Color lineColor = sf::Color::Black;
-  const sf::Color crossColor = sf::Color::Red/*generateRandomColor()*/;
-  const float windowWidth = static_cast<float>(windowSize.x);
-  const float windowHeight = static_cast<float>(windowSize.y);
-  const float vertThickness = 5.f;
-  const float horizThickness = 5.f;
-  const float squareSize = windowWidth * (1.0f / 3.0f);
+  FieldDTO dto{
+    sf::Color::Black, sf::Color::Red,
+    static_cast< float >(windowSize.x), static_cast< float >(windowSize.y),
+    5.f, 5.f
+  };
   sf::Vector2f mousePosWindow = getMousePosition();
-  drawLines(window_, squareSize, windowWidth, windowHeight, vertThickness, horizThickness, lineColor);
-  const float figureSize = calcFigureSize(squareSize, 3);
-  drawFigures(window_, squareSize, figureSize, windowWidth, windowHeight, mousePosWindow, crossColor);
+  drawLines(window_, dto);
+  drawFigures(window_, dto, mousePosWindow, elapsedTime_);
 }
 void Game::pollEvents()
 {

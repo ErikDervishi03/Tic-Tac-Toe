@@ -17,11 +17,10 @@ public:
   void update(sf::Clock clock);
   void render();
   sf::Vector2f getMousePosition();
-  double elapsedTime_;
 private:
+  double elapsedTime_;
   sf::RenderWindow *window_;
   sf::Event ev_;
   sf::VideoMode videoMode_;
-  float calcFigureSize(float squareSize, float period) const;
 };
 #endif
