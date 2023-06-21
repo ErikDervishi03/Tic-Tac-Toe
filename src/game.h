@@ -9,7 +9,7 @@
 class Game
 {
 public:
-  Game(const std::string &title);
+  explicit Game(const std::string &title);
   ~Game() = default;
   bool running() const;
   void drawField();
@@ -17,10 +17,11 @@ public:
   void update(sf::Clock clock);
   void render();
   sf::Vector2f getMousePosition();
+  double elapsedTime_;
 private:
   sf::RenderWindow *window_;
   sf::Event ev_;
   sf::VideoMode videoMode_;
-  double elapsedTime_;
+  float calcFigureSize(float squareSize, float period) const;
 };
 #endif

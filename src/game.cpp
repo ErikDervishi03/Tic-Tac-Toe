@@ -7,49 +7,52 @@ namespace
 {
   sf::Vector2f getFigurePos(float squareSize, bool left, bool midX, bool right, bool up, bool midY, bool lower)
   {
+    const float halfSize = squareSize / 2.f;
+    const float threeHalfSize = squareSize * 3.f / 2.f;
+    const float fiveHalfSize = squareSize * 5.f / 2.f;
     if (left)
     {
       if (up)
       {
-        return {squareSize / 2.f, squareSize / 2.f};
+        return {halfSize, halfSize};
       }
-      if (midY)
+      else if (midY)
       {
-        return {squareSize / 2.f, squareSize * 3.f / 2.f};
+        return {halfSize, threeHalfSize};
       }
-      if (lower)
+      else if (lower)
       {
-        return {squareSize / 2.f, squareSize * 5.f / 2.f};
+        return {halfSize, fiveHalfSize};
       }
     }
     else if (midX)
     {
       if (up)
       {
-        return {squareSize * 3.f / 2.f, squareSize / 2.f};
+        return {threeHalfSize, halfSize};
       }
-      if (midY)
+      else if (midY)
       {
-        return {squareSize * 3.f / 2.f, squareSize * 3.f / 2.f};
+        return {threeHalfSize, threeHalfSize};
       }
-      if (lower)
+      else if (lower)
       {
-        return {squareSize * 3.f / 2.f, squareSize * 5.f / 2.f};
+        return {threeHalfSize, fiveHalfSize};
       }
     }
     else if (right)
     {
       if (up)
       {
-        return {squareSize * 5.f / 2.f, squareSize / 2.f};
+        return {fiveHalfSize, halfSize};
       }
-      if (midY)
+      else if (midY)
       {
-        return {squareSize * 5.f / 2.f, squareSize * 3.f / 2.f};
+        return {fiveHalfSize, threeHalfSize};
       }
-      if (lower)
+      else if (lower)
       {
-        return {squareSize * 5.f / 2.f, squareSize * 5.f / 2.f};
+        return {fiveHalfSize, fiveHalfSize};
       }
     }
     return {-1.f, -1.f};
@@ -133,6 +136,10 @@ namespace
     return {wSize, wSize};
   }
 }
+float Game::calcFigureSize(float squareSize, float period) const
+{
+  return squareSize - static_cast< float >(0.1f * squareSize * sin(elapsedTime_ * period));
+}
 Game::Game(const std::string &title):
   videoMode_(calcGameWindowSize()),
   ev_(),
@@ -156,8 +163,7 @@ void Game::drawField()
   const float squareSize = windowWidth * (1.0f / 3.0f);
   sf::Vector2f mousePosWindow = getMousePosition();
   drawLines(window_, squareSize, windowWidth, windowHeight, vertThickness, horizThickness, lineColor);
-  float period = 3;
-  const float figureSize = squareSize - static_cast< float >(0.1f * squareSize * sin(elapsedTime_ * period));
+  const float figureSize = calcFigureSize(squareSize, 3);
   drawFigures(window_, squareSize, figureSize, windowWidth, windowHeight, mousePosWindow, crossColor);
 }
 void Game::pollEvents()
