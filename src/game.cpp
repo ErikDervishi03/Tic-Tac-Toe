@@ -11,57 +11,20 @@ namespace
     const float squareSize = windowWidth * (1.0f / 3.0f);
     return squareSize - static_cast< float >(0.1f * squareSize * sin(elapsedTime * period));
   }
-  sf::Vector2f getFigurePos(float squareSize, bool left, bool midX, bool right, bool up, bool midY, bool lower)
+  sf::Vector2f getFigurePos(float squareSize, const std::vector< bool > &figurePosScheme)
   {
     const float halfSize = squareSize / 2.f;
     const float threeHalfSize = squareSize * 3.f / 2.f;
     const float fiveHalfSize = squareSize * 5.f / 2.f;
-    if (left)
-    {
-      if (up)
-      {
-        return {halfSize, halfSize};
-      }
-      else if (midY)
-      {
-        return {halfSize, threeHalfSize};
-      }
-      else if (lower)
-      {
-        return {halfSize, fiveHalfSize};
-      }
-    }
-    else if (midX)
-    {
-      if (up)
-      {
-        return {threeHalfSize, halfSize};
-      }
-      else if (midY)
-      {
-        return {threeHalfSize, threeHalfSize};
-      }
-      else if (lower)
-      {
-        return {threeHalfSize, fiveHalfSize};
-      }
-    }
-    else if (right)
-    {
-      if (up)
-      {
-        return {fiveHalfSize, halfSize};
-      }
-      else if (midY)
-      {
-        return {fiveHalfSize, threeHalfSize};
-      }
-      else if (lower)
-      {
-        return {fiveHalfSize, fiveHalfSize};
-      }
-    }
-    return {-1.f, -1.f};
+    bool inLeftPart = figurePosScheme[0];
+    bool inMidXPart = figurePosScheme[1];
+    bool inRightPart = figurePosScheme[2];
+    bool inUpPart = figurePosScheme[3];
+    bool inMidYPart = figurePosScheme[4];
+    bool inLowerPart = figurePosScheme[5];
+    float x = inLeftPart ? halfSize : (inMidXPart ? threeHalfSize : (inRightPart ? fiveHalfSize : -1.f));
+    float y = inUpPart ? halfSize : (inMidYPart ? threeHalfSize : (inLowerPart ? fiveHalfSize : -1.f));
+    return {x, y};
   }
   void drawLines(sf::RenderWindow *window, const FieldDTO &dto)
   {
@@ -103,11 +66,11 @@ namespace
     bool inUpPart = (mousePosWindow.y > indent) && (mousePosWindow.y < squareSize - indent);
     bool inMidYPart = (mousePosWindow.y > squareSize + indent) && (mousePosWindow.y < 2 * squareSize - indent);
     bool inLowerPart = (mousePosWindow.y > 2 * squareSize + indent) && (mousePosWindow.y < dto.windowHeight - indent);
-    sf::Vector2f crossPos{
-      getFigurePos(squareSize,
-                   inLeftPart, inMidXPart, inRightPart,
-                   inUpPart, inMidYPart, inLowerPart)
+    std::vector< bool > figurePosScheme = {
+      inLeftPart, inMidXPart, inRightPart,
+      inUpPart, inMidYPart, inLowerPart
     };
+    sf::Vector2f crossPos{getFigurePos(squareSize, figurePosScheme)};
     if (crossPos.x != -1.f && crossPos.y != -1.f)
     {
       const float figureSize = calcFigureSize(dto.windowWidth, elapsedTime, 3);
