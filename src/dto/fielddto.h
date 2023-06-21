@@ -3,11 +3,11 @@
 #define FIELDDTO_H
 struct FieldDTO
 {
-  const sf::Color lineColor;
-  const sf::Color crossColor;
-  const float windowWidth;
-  const float windowHeight;
-  const float vertThickness;
-  const float horizThickness;
+  const sf::Color lineCol;
+  const sf::Color crossCol;
+  const float winWidth;
+  const float winHeight;
+  const float vertThick;
+  const float horizThick;
 };
 #endif
