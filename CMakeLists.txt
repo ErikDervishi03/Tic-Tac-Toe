@@ -17,13 +17,9 @@ add_executable(
         ${CMAKE_PROJECT_NAME} WIN32
         src/main.cpp
         src/cross.cpp
-        src/cross.h
         src/line.cpp
-        src/line.h
-        src/line.h
         src/line.cpp
         src/mathfuncs.cpp
-        src/mathfuncs.h
         )
 
 find_package(SFML COMPONENTS system window graphics audio network REQUIRED)

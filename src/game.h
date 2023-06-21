@@ -9,7 +9,7 @@
 class Game
 {
 public:
-  Game(const std::string &title);
+  explicit Game(const std::string &title);
   ~Game() = default;
   bool running() const;
   void drawField();
@@ -18,9 +18,9 @@ public:
   void render();
   sf::Vector2f getMousePosition();
 private:
+  double elapsedTime_;
   sf::RenderWindow *window_;
   sf::Event ev_;
   sf::VideoMode videoMode_;
-  double elapsedTime_;
 };
 #endif
